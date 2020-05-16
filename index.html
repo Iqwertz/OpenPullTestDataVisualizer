@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Ble Interface</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <link rel="stylesheet" href="assets/css/main.css" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.9/angular.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+        <script src="https://kit.fontawesome.com/096ef5e38d.js" crossorigin="anonymous"></script>
+    </head>
+    <body ng-app="app">
+        <div ng-controller="Visualizer" id="Visualizer">
+            <div class="SelectDataPreview" ng-hide="ShowData">
+                <div class="SelectDataPreviewOverlay">
+                    <div class="SelectContainer">
+                        Select Test Data
+                        <button id="FileInputButton">
+                            <i class="fas fa-plus"></i> New TestData
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="VisualizerContainer" ng-show="ShowData">
+                <div class="Chart" id="ChartCon">
+                    <canvas id="LiveChart" class="Chart"></canvas>
+                </div>
+                <div class="TestData">
+                    <div class="SelectTest">
+                        <ul>
+                            <li ng-repeat="data in Data">
+                                <div class="TestItem">
+                                    1{{data.MetaData.FileName}} : {{data.MetaData.Name}}
+                                </div> 
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="assets/js/script.js"></script>
+    </body>
+</html>
