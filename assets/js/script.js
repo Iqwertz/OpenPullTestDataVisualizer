@@ -12,7 +12,6 @@ fileInput.addEventListener('change', function() {
     for (var i = 0; i < files.length; i++) {         
         (function(file) {
             var name = file.name;
-            name=name.substr(1);
             var reader = new FileReader();  
             if(i==files.length-1){
                 reader.onload = function(e) {  
@@ -45,22 +44,83 @@ document.getElementById("FileInputButton").addEventListener('click', function() 
 });
 /////////////////////////////Data Visualizer////////////////////////////
 
-function test(){
-    var scope = angular.element(document.getElementById("Visualizer")).scope();
-    scope.$apply(function(){
-        scope.SetShowData(true);
-    })
-}
-
 var app = angular.module("app", []);
 
 app.controller('Visualizer', function($scope) {
     $scope.ShowData=false;//false;
     $scope.Data=[];
+    $scope.CurrentTestData = {};
+    $scope.DisplayMetaData =[];
+    $scope.DisplayParameter =[];
 
     $scope.SetShowData = function(state) {
         $scope.ShowData=state;
         $scope.Data=JsonData;
+    }
+
+    $scope.BackToMenu = function(){
+
+        angular.element( document.querySelector( '.SelectTest' ) ).removeClass('SelectTestMove');
+
+        var element = angular.element(document.querySelector('.SelectTest'));
+        var height = element[0].offsetHeight;
+        document.querySelector( '.MetaData' ).style.transform = "translate(130%, -"+height+"px)";
+
+        ClearData();
+        $scope.CurrentTestData = {};
+        $scope.DisplayMetaData =[];
+        $scope.DisplayParameter =[];
+
+    }
+
+    $scope.SetFile = function(FN){
+        var JsonIndex=0;
+        for(var i=0; i<$scope.Data.length; i++){
+            if($scope.Data[i].MetaData.FileName==FN){
+                JsonIndex=i;
+                break;
+            }
+        }
+
+        $scope.CurrentTestData=$scope.Data[JsonIndex];
+
+
+        var TestDataNames;
+        var TestDataValues;
+
+        TestDataNames=Object.getOwnPropertyNames($scope.CurrentTestData.MetaData);
+        TestDataValues=Object.values($scope.CurrentTestData.MetaData);
+
+
+        for(var i=0; i<TestDataNames.length; i++){
+            if(TestDataNames[i]!="Parameter"){
+                $scope.DisplayMetaData.push([TestDataNames[i], TestDataValues[i]]);
+            }
+        }
+
+
+        var TestDataParameterNames;
+        var TestDataParameterValues;
+
+        TestDataParameterNames=Object.getOwnPropertyNames($scope.CurrentTestData.MetaData.Parameter);
+        TestDataParameterValues=Object.values($scope.CurrentTestData.MetaData.Parameter);
+
+
+        for(var i=0; i<TestDataParameterNames.length; i++){
+            if(TestDataParameterNames[i]!="Parameter"){
+                $scope.DisplayParameter.push([TestDataParameterNames[i], TestDataParameterValues[i]]);
+            }
+        }
+
+        console.log($scope.DisplayMetaData);
+
+        angular.element( document.querySelector( '.SelectTest' ) ).addClass('SelectTestMove');
+
+        var element = angular.element(document.querySelector('.SelectTest'));
+        var height = element[0].offsetHeight;
+        document.querySelector( '.MetaData' ).style.transform = "translate(0px, -"+height+"px)";
+
+        SetData($scope.CurrentTestData.Data);
     }
 });
 
@@ -79,7 +139,7 @@ var LiveChart = new Chart(ctx, {
             data: [],
             backgroundColor: '#297446',
             borderColor: '#297947',
-            borderWidth: 1,
+            borderWidth: 2,
             lineTension: 0,
             lineTension: 0,
             pointRadius: 0,
@@ -149,4 +209,10 @@ function addData(data, steps) {
         DatasetData.shift();
         LD.shift();
     }*/
+}
+
+function ClearData(){
+    LiveChart.data.labels=["0"];
+    LiveChart.data.datasets[0].data = [];
+    LiveChart.update();
 }

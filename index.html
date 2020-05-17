@@ -26,17 +26,47 @@
                 <div class="Chart" id="ChartCon">
                     <canvas id="LiveChart" class="Chart"></canvas>
                 </div>
-                <div class="TestData">
+
+                <div class="TestData" >
+
                     <div class="SelectTest">
+                        <h1>Select Test</h1>
                         <ul>
                             <li ng-repeat="data in Data">
-                                <div class="TestItem">
-                                    1{{data.MetaData.FileName}} : {{data.MetaData.Name}}
+                                <div ng-click="SetFile(data.MetaData.FileName)" class="TestItem">
+                                    {{data.MetaData.FileName}} : {{data.MetaData.Name}}
                                 </div> 
                             </li>
+
                         </ul>
                     </div>
-                </div>
+
+                    <div class="MetaData" >
+                        <i ng-click="BackToMenu();" class="fas fa-arrow-left"></i>
+                        <h1>MetaData</h1>
+                        <ul>
+                            <li ng-repeat="data in DisplayMetaData">
+                                <div class="TestItem">
+                                    {{data[0]}} : {{data[1]}}
+                                </div> 
+                            </li>
+
+                            <li>
+                                <div class="TestItem">
+                                    Parameter:
+                                </div>
+                            </li>
+
+                            <ul>
+                                <li ng-repeat="data in DisplayParameter">
+                                    <div class="TestItem Parameter">
+                                        {{data[0]}} : {{data[1]}}
+                                    </div> 
+                                </li>
+                            </ul>
+                        </ul>
+                    </div>
+                </div>  
             </div>
         </div>
         <script src="assets/js/script.js"></script>
