@@ -126,7 +126,7 @@ app.controller('Visualizer', function($scope) {
 
 var DefaultStepSize=1;
 
-var ctx = document.getElementById('LiveChart');
+var ctx = document.getElementById('LiveChartId');
 
 ctx.height=innerDimensions('ChartCon').height;
 ctx.width=innerDimensions('ChartCon').width;
