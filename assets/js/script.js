@@ -6,9 +6,11 @@ var fileInput = element.firstChild;
 
 var JsonData = [];
 
+var Mode = 0; //Mode 0 = View TestData / 1 = View Breakpoints
+
 fileInput.addEventListener('change', function() {
     var files = fileInput.files;
-    var ErrorFiles = []
+    var ErrorFiles = [];
 
     for (var i = 0; i < files.length; i++) {         
         (function(file) {
@@ -30,11 +32,11 @@ fileInput.addEventListener('change', function() {
                     if(ErrorFiles.length!=0){
                         alert("Attention this Files are Broken: "+ErrorFiles.toString());
                     }
-                    
+
                     if(JsonData.length!=0){
                         var scope = angular.element(document.getElementById("Visualizer")).scope();
                         scope.$apply(function(){
-                            scope.SetShowData(true);
+                            scope.SetShowData(Mode+1);
                         });
                     }
 
@@ -62,29 +64,38 @@ fileInput.addEventListener('change', function() {
     */
 });
 
-document.getElementById("FileInputButton").addEventListener('click', function() {
+document.getElementById("DataFileInputButton").addEventListener('click', function() {
     fileInput.click();
+    Mode=0;
+});
+
+document.getElementById("BreakpointFileInputButton").addEventListener('click', function() {
+    fileInput.click();
+    Mode=1;
 });
 /////////////////////////////Data Visualizer////////////////////////////
 
 var app = angular.module("app", []);
 
 app.controller('Visualizer', function($scope) {
-    $scope.ShowData=false;//false;
+    $scope.ShowMode=0; // 0 = SeöectScreen / 1 = View TestData / 2 = Breakpoints
     $scope.Data=[];
     $scope.CurrentTestData = {};
     $scope.DisplayMetaData =[];
     $scope.DisplayParameter =[];
     $scope.DisplayBreakpoint = 0;
 
-    $scope.SetShowData = function(state) {
-        $scope.ShowData=state;
+    $scope.SetShowData = function(mode) {
+        $scope.ShowMode=mode;
         $scope.Data=JsonData;
+        if($scope.ShowMode==2){
+            $scope.SetBreakpointData();   
+        }
     }
 
     $scope.BackToSelectMenu = function(){
         $scope.BackToMenu();
-        $scope.ShowData=false;
+        $scope.ShowMode=0;
         $scope.Data=[];
         JsonData=[];
     }
@@ -105,6 +116,7 @@ app.controller('Visualizer', function($scope) {
     }
 
     $scope.SetFile = function(FN){
+
         var JsonIndex=0;
         for(var i=0; i<$scope.Data.length; i++){
             if($scope.Data[i].MetaData.FileName==FN){
@@ -152,6 +164,10 @@ app.controller('Visualizer', function($scope) {
         document.querySelector( '.MetaData' ).style.transform = "translate(0px, -"+height+"px)";
 
         SetData($scope.CurrentTestData.Data);
+    }
+
+    $scope.SetBreakpointData = function() {
+        SetBarData(JsonData);
     }
 });
 
@@ -211,6 +227,72 @@ var LiveChart = new Chart(ctx, {
     }
 });
 
+var ctx2 = document.getElementById('BreakpointChartId');
+
+ctx2.height=innerDimensions('BarChartCon').height;
+ctx2.width=innerDimensions('BarChartCon').width;
+
+var BarChart = new Chart(ctx2, {
+    type: 'bar',
+    data: {
+        labels: [],
+        datasets: [{
+            data: [],
+            backgroundColor: 'rgba(41, 121, 71, 0.48)',
+            borderColor: '#297947',
+            borderWidth: 1,
+            lineTension: 0,
+            lineTension: 0,
+            pointRadius: 0,
+            fill: false,
+        }]
+    }, 
+    options: {
+        responsive: true,
+        onAnimationComplete: function () {
+            var ctx = this.chart.ctx;
+            ctx.font = this.scale.font;
+            ctx.fillStyle = this.scale.textColor
+            ctx.textAlign = "center";
+            ctx.textBaseline = "bottom";
+
+            this.datasets.forEach(function (dataset) {
+                dataset.bars.forEach(function (bar) {
+                    ctx.fillText(bar.value, bar.x, bar.y - 5);
+                });
+            })
+        },
+        tooltips: {
+            mode: 'index',
+            //intersect: false,
+        },
+        hover: {
+            mode: 'nearest', 
+            intersect: true
+        },
+        scales: {
+            xAxes: [{
+                display: true,
+                ticks: {
+                    min: 0,
+                    max: 100,
+                    stepSize: 0.5
+                },
+                scaleLabel: {
+                    display: false
+                }
+            }],
+            yAxes: [{
+                display: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Force (N)'
+                }
+            }]
+        }
+    }
+});
+
 function innerDimensions(id){
     var node= document.getElementById(id)
     var computedStyle = getComputedStyle(node);
@@ -236,14 +318,28 @@ function addData(data, steps) {
     LD.push((Number(LD[LD.length-1])+DataSteps).toString());
     var DatasetData=LiveChart.data.datasets[0].data;
     DatasetData.push(data);
-    /*if(DatasetData.length>DisplayedValues){
-        DatasetData.shift();
-        LD.shift();
-    }*/
 }
 
 function ClearData(){
     LiveChart.data.labels=["0"];
     LiveChart.data.datasets[0].data = [];
     LiveChart.update();
+
+    BarChart.data.labels=["0"];
+    BarChart.data.datasets[0].data = [];
+    BarChart.update();
+}
+
+function SetBarData(JsonObj){
+    for(var i=0; i<JsonObj.length; i++){
+        AddBarData(JsonObj[i].BreakPoint, JsonObj[i].MetaData.Name)
+    }
+    BarChart.update();
+}
+
+function AddBarData(data, label){
+    var BL=BarChart.data.labels;
+    BL.push(label)
+    var BD=BarChart.data.datasets[0].data;
+    BD.push(data);
 }

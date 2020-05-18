@@ -6,23 +6,30 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
         <link rel="stylesheet" href="assets/css/main.css" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.9/angular.min.js"></script>
+
         <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
         <script src="https://kit.fontawesome.com/096ef5e38d.js" crossorigin="anonymous"></script>
     </head>
     <body ng-app="app">
         <div ng-controller="Visualizer" id="Visualizer">
-            <div class="SelectDataPreview" ng-hide="ShowData">
+            <div class="SelectDataPreview" ng-show="ShowMode==0">
                 <div class="SelectDataPreviewOverlay">
                     <div class="SelectContainer">
                         Select Test Data
-                        <button id="FileInputButton">
-                            <i class="fas fa-plus"></i> New TestData
-                        </button>
+
+                        <div>
+                            <button id="DataFileInputButton">
+                                <i class="fas fa-plus"></i> View TestData
+                            </button>
+                            <button id="BreakpointFileInputButton">
+                                <i class="fas fa-plus"></i> View Breakpoints
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="VisualizerContainer" ng-show="ShowData">
+            <div class="VisualizerContainer" ng-show="ShowMode==1">
                 <div ng-click="BackToSelectMenu();" class="Back">
                     <i class="fas fa-arrow-left"></i>
                 </div>
@@ -77,6 +84,16 @@
                         </ul>
                     </div>
                 </div>  
+            </div>
+
+            <div class="BreakpointContainer" ng-show="ShowMode==2">
+                <div ng-click="BackToSelectMenu();" class="Back">
+                    <i class="fas fa-arrow-left"></i>
+                </div>
+
+                <div class="Chart" id="BarChartCon">
+                    <canvas id="BreakpointChartId"></canvas>
+                </div>
             </div>
         </div>
         <script src="assets/js/script.js"></script>
