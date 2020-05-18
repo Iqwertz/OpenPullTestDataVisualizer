@@ -23,6 +23,10 @@
             </div>
 
             <div class="VisualizerContainer" ng-show="ShowData">
+                <div ng-click="BackToSelectMenu();" class="Back">
+                    <i class="fas fa-arrow-left"></i>
+                </div>
+
                 <div class="Chart" id="ChartCon">
                     <canvas id="LiveChartId"></canvas>
                 </div>
@@ -48,6 +52,12 @@
                             <li ng-repeat="data in DisplayMetaData">
                                 <div class="TestItem">
                                     {{data[0]}} : {{data[1]}}
+                                </div> 
+                            </li>
+
+                            <li>
+                                <div class="TestItem">
+                                    BreakPoint : {{DisplayBreakpoint}}
                                 </div> 
                             </li>
 

@@ -92,6 +92,12 @@ ul {
     background-color: #262626;
     overflow-y: auto;
     overflow-x: hidden; }
+  .VisualizerContainer .Back {
+    top: 5px;
+    left: 10px;
+    position: absolute;
+    color: #e2e2e2;
+    font-size: 3em; }
 
 .SelectTest {
   cursor: default;

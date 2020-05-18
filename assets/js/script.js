@@ -8,6 +8,7 @@ var JsonData = [];
 
 fileInput.addEventListener('change', function() {
     var files = fileInput.files;
+    var ErrorFiles = []
 
     for (var i = 0; i < files.length; i++) {         
         (function(file) {
@@ -15,21 +16,43 @@ fileInput.addEventListener('change', function() {
             var reader = new FileReader();  
             if(i==files.length-1){
                 reader.onload = function(e) {  
-                    var text = e.target.result; 
-                    var json = JSON.parse(text);
-                    json.MetaData.FileName = name; 
-                    JsonData.push(json);
-                    var scope = angular.element(document.getElementById("Visualizer")).scope();
-                    scope.$apply(function(){
-                        scope.SetShowData(true);
-                    })
+                    try{
+                        var text = e.target.result; 
+                        var json = JSON.parse(text);
+
+                        json.MetaData.FileName = name; 
+                        JsonData.push(json);
+                    }catch(error){
+                        console.log(error);
+                        ErrorFiles.push(name);
+                    }
+
+                    if(ErrorFiles.length!=0){
+                        alert("Attention this Files are Broken: "+ErrorFiles.toString());
+                    }
+                    
+                    if(JsonData.length!=0){
+                        var scope = angular.element(document.getElementById("Visualizer")).scope();
+                        scope.$apply(function(){
+                            scope.SetShowData(true);
+                        });
+                    }
+
                 }
             }else{
-                reader.onload = function(e) {  
-                    var text = e.target.result; 
-                    var json = JSON.parse(text);
-                    json.MetaData.FileName= name; 
-                    JsonData.push(json);
+                reader.onload = function(e) { 
+
+                    try{
+                        var text = e.target.result; 
+                        var json = JSON.parse(text);
+                        json.MetaData.FileName= name; 
+                        JsonData.push(json);
+
+                    }catch(error){
+                        console.log(error);
+                        ErrorFiles.push(name);
+                    }
+
                 }
             }
             reader.readAsText(file);
@@ -52,10 +75,18 @@ app.controller('Visualizer', function($scope) {
     $scope.CurrentTestData = {};
     $scope.DisplayMetaData =[];
     $scope.DisplayParameter =[];
+    $scope.DisplayBreakpoint = 0;
 
     $scope.SetShowData = function(state) {
         $scope.ShowData=state;
         $scope.Data=JsonData;
+    }
+
+    $scope.BackToSelectMenu = function(){
+        $scope.BackToMenu();
+        $scope.ShowData=false;
+        $scope.Data=[];
+        JsonData=[];
     }
 
     $scope.BackToMenu = function(){
@@ -70,7 +101,7 @@ app.controller('Visualizer', function($scope) {
         $scope.CurrentTestData = {};
         $scope.DisplayMetaData =[];
         $scope.DisplayParameter =[];
-
+        $scope.DisplayBreakpoint = 0;
     }
 
     $scope.SetFile = function(FN){
@@ -83,7 +114,7 @@ app.controller('Visualizer', function($scope) {
         }
 
         $scope.CurrentTestData=$scope.Data[JsonIndex];
-
+        $scope.DisplayBreakpoint = $scope.CurrentTestData.BreakPoint;
 
         var TestDataNames;
         var TestDataValues;
@@ -149,8 +180,8 @@ var LiveChart = new Chart(ctx, {
     options: {
         responsive: true,
         tooltips: {
-            mode: 'ipoint',
-            //  intersect: false,
+            mode: 'index',
+            //intersect: false,
         },
         hover: {
             mode: 'nearest', 

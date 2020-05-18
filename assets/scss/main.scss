@@ -120,6 +120,14 @@ ul {
         overflow-x: hidden;
 
     }
+    
+    .Back{
+        top: 5px;
+        left: 10px;
+        position: absolute;
+        color: $accent2;
+        font-size: 3em;
+    }
 }
 
 .SelectTest{
