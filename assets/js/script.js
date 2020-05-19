@@ -1,39 +1,44 @@
-/////////Code from https://gist.github.com/liabru/11263124 //////////
+/////////////File Upload Handler
+/////////Base Code from https://gist.github.com/liabru/11263124 //////////
 
+
+///create input type file element 
 var element = document.createElement('div');
 element.innerHTML = '<input type="file" multiple >';
 var fileInput = element.firstChild;
+/////
 
-var JsonData = [];
+
+var JsonData = [];  //Array which contains The files in form of a Json obj
 
 var Mode = 0; //Mode 0 = View TestData / 1 = View Breakpoints
 
 fileInput.addEventListener('change', function() {
-    var files = fileInput.files;
-    var ErrorFiles = [];
+    var files = fileInput.files;                //get files
+    var ErrorFiles = [];                        //Array of broken file names
 
-    for (var i = 0; i < files.length; i++) {         
+    for (var i = 0; i < files.length; i++) {         //loop threw files
         (function(file) {
-            var name = file.name;
-            var reader = new FileReader();  
-            if(i==files.length-1){
+            var name = file.name;                    //get file name
+            var reader = new FileReader();           //create File reader from the file Api
+            if(i==files.length-1){                   //Check if it is last file
                 reader.onload = function(e) {  
-                    try{
-                        var text = e.target.result; 
-                        var json = JSON.parse(text);
-
-                        json.MetaData.FileName = name; 
-                        JsonData.push(json);
+                    try{                             //try creating JSON
+                        var text = e.target.result;  //get data
+                        var json = JSON.parse(text); //convert data to Json 
+ 
+                        json.MetaData.FileName = name;//add File Name to Json obj
+                        JsonData.push(json);          //add Data to Json Array
                     }catch(error){
                         console.log(error);
-                        ErrorFiles.push(name);
+                        ErrorFiles.push(name);        //If file ist broken push its name to the Error Array
                     }
 
-                    if(ErrorFiles.length!=0){
+                    if(ErrorFiles.length!=0){  //If there are broken files alert them to the user
                         alert("Attention this Files are Broken: "+ErrorFiles.toString());
                     }
 
-                    if(JsonData.length!=0){
+                    if(JsonData.length!=0){ //if there is Valid Data Activate load Data
                         var scope = angular.element(document.getElementById("Visualizer")).scope();
                         scope.$apply(function(){
                             scope.SetShowData(Mode+1);
@@ -44,15 +49,15 @@ fileInput.addEventListener('change', function() {
             }else{
                 reader.onload = function(e) { 
 
-                    try{
-                        var text = e.target.result; 
-                        var json = JSON.parse(text);
-                        json.MetaData.FileName= name; 
-                        JsonData.push(json);
-
+                    try{                             //try creating JSON
+                        var text = e.target.result;  //get data
+                        var json = JSON.parse(text); //convert data to Json 
+ 
+                        json.MetaData.FileName = name;//add File Name to Json obj
+                        JsonData.push(json);          //add Data to Json Array
                     }catch(error){
                         console.log(error);
-                        ErrorFiles.push(name);
+                        ErrorFiles.push(name);        //If file ist broken push its name to the Error Array
                     }
 
                 }
@@ -64,6 +69,7 @@ fileInput.addEventListener('change', function() {
     */
 });
 
+//When Upload Btton clicked Set Mode and start File Api
 document.getElementById("DataFileInputButton").addEventListener('click', function() {
     fileInput.click();
     Mode=0;
@@ -73,34 +79,35 @@ document.getElementById("BreakpointFileInputButton").addEventListener('click', f
     fileInput.click();
     Mode=1;
 });
-/////////////////////////////Data Visualizer////////////////////////////
+
+/////////////////////////////Angular ///// Data Visualizer////////////////////////////
 
 var app = angular.module("app", []);
 
 app.controller('Visualizer', function($scope) {
-    $scope.ShowMode=0; // 0 = SeöectScreen / 1 = View TestData / 2 = Breakpoints
-    $scope.Data=[];
-    $scope.CurrentTestData = {};
-    $scope.DisplayMetaData =[];
-    $scope.DisplayParameter =[];
-    $scope.DisplayBreakpoint = 0;
+    $scope.ShowMode=0; // 0 = SelectScreen / 1 = View TestData / 2 = Breakpoints
+    $scope.Data=[];   //Data Array Containing Json Data
+    $scope.CurrentTestData = {};   //Obj containig the selected Test Data
+    $scope.DisplayMetaData =[];       //Array Containig the MetaData of the Selected Test (Used for ng-repeat)  // Data: [Name, Data]
+    $scope.DisplayParameter =[];  //Array Containig the Parameter of the Selected Test (Used for ng-repeat) // Data: [Name, Data]
+    $scope.DisplayBreakpoint = 0;  //Breakpoint of the selected Test
 
-    $scope.SetShowData = function(mode) {
-        $scope.ShowMode=mode;
-        $scope.Data=JsonData;
-        if($scope.ShowMode==2){
-            $scope.SetBreakpointData();   
+    $scope.SetShowData = function(mode) {  //Called when Files are loaded
+        $scope.ShowMode=mode;   //Set the mode
+        $scope.Data=JsonData;    //set the data
+        if($scope.ShowMode==2){   //If Breakpoint analyses
+            $scope.SetBreakpointData();     //Draw Bar Graph
         }
     }
 
-    $scope.BackToSelectMenu = function(){
+    $scope.BackToSelectMenu = function(){   //Reset Data when Back arrow is clicked
         $scope.BackToMenu();
         $scope.ShowMode=0;
         $scope.Data=[];
         JsonData=[];
     }
 
-    $scope.BackToMenu = function(){
+    $scope.BackToMenu = function(){    //Reset Graph  and selected Test //Back to Select Data Menu (only in ShowMode = 1)
 
         angular.element( document.querySelector( '.SelectTest' ) ).removeClass('SelectTestMove');
 
@@ -115,55 +122,57 @@ app.controller('Visualizer', function($scope) {
         $scope.DisplayBreakpoint = 0;
     }
 
-    $scope.SetFile = function(FN){
+    $scope.SetFile = function(FN){   //Called When Test is selected // FN = FileName
 
         var JsonIndex=0;
-        for(var i=0; i<$scope.Data.length; i++){
+        for(var i=0; i<$scope.Data.length; i++){   //Search for the Index of the file in the Json Array
             if($scope.Data[i].MetaData.FileName==FN){
                 JsonIndex=i;
                 break;
             }
         }
 
-        $scope.CurrentTestData=$scope.Data[JsonIndex];
-        $scope.DisplayBreakpoint = $scope.CurrentTestData.BreakPoint;
+        $scope.CurrentTestData=$scope.Data[JsonIndex];  //Set Current Test Data
+        $scope.DisplayBreakpoint = $scope.CurrentTestData.BreakPoint;   //Set Breakpoint
 
-        var TestDataNames;
-        var TestDataValues;
+        var TestDataNames;   //Get Names of JSON Metadata Properties in Array
+        var TestDataValues;  //Get Data of Json Metadata Properties in Array
 
         TestDataNames=Object.getOwnPropertyNames($scope.CurrentTestData.MetaData);
         TestDataValues=Object.values($scope.CurrentTestData.MetaData);
 
 
-        for(var i=0; i<TestDataNames.length; i++){
+        //Set Data Values
+        for(var i=0; i<TestDataNames.length; i++){ //Set MetaData vor every Property except "Parameter"
             if(TestDataNames[i]!="Parameter"){
                 $scope.DisplayMetaData.push([TestDataNames[i], TestDataValues[i]]);
             }
         }
 
 
-        var TestDataParameterNames;
-        var TestDataParameterValues;
+        var TestDataParameterNames; //Get Names of JSON Metadata Parameter Properties in Array
+        var TestDataParameterValues; //Get Data of JSON Metadata Parameter Properties in Array
 
         TestDataParameterNames=Object.getOwnPropertyNames($scope.CurrentTestData.MetaData.Parameter);
         TestDataParameterValues=Object.values($scope.CurrentTestData.MetaData.Parameter);
 
 
-        for(var i=0; i<TestDataParameterNames.length; i++){
-            if(TestDataParameterNames[i]!="Parameter"){
+        for(var i=0; i<TestDataParameterNames.length; i++){   //Set Parameter vor every Property
                 $scope.DisplayParameter.push([TestDataParameterNames[i], TestDataParameterValues[i]]);
-            }
+            
         }
 
         console.log($scope.DisplayMetaData);
 
+        
+        ///////Set swipe animation
         angular.element( document.querySelector( '.SelectTest' ) ).addClass('SelectTestMove');
 
         var element = angular.element(document.querySelector('.SelectTest'));
         var height = element[0].offsetHeight;
         document.querySelector( '.MetaData' ).style.transform = "translate(0px, -"+height+"px)";
 
-        SetData($scope.CurrentTestData.Data);
+        SetData($scope.CurrentTestData.Data); //Set Line Chart Data
     }
 
     $scope.SetBreakpointData = function() {
@@ -171,15 +180,16 @@ app.controller('Visualizer', function($scope) {
     }
 });
 
-var DefaultStepSize=1;
+var DefaultStepSize=1;   //Step Siz eof Displayed Data (y-Axis)
 
-var ctx = document.getElementById('LiveChartId');
+var ctx = document.getElementById('LiveChartId');  //Get chart context 
 
-ctx.height=innerDimensions('ChartCon').height;
+ //Set Width and Height of the chart to fit container
+ctx.height=innerDimensions('ChartCon').height;   
 ctx.width=innerDimensions('ChartCon').width;
 
-var LiveChart = new Chart(ctx, {
-    type: 'line',
+var LiveChart = new Chart(ctx, {  //create Chart.js Chart and Set options for the Line Chart
+    type: 'line',                   
     data: {
         labels: ['0'],
         datasets: [{
@@ -227,12 +237,13 @@ var LiveChart = new Chart(ctx, {
     }
 });
 
-var ctx2 = document.getElementById('BreakpointChartId');
+var ctx2 = document.getElementById('BreakpointChartId');  //Get Chart Index
 
+ //Set Width and Height of the chart to fit container
 ctx2.height=innerDimensions('BarChartCon').height;
 ctx2.width=innerDimensions('BarChartCon').width;
 
-var BarChart = new Chart(ctx2, {
+var BarChart = new Chart(ctx2, {   //create Chart.js Chart and Set options for the Bar Chart
     type: 'bar',
     data: {
         labels: [],
@@ -293,7 +304,7 @@ var BarChart = new Chart(ctx2, {
     }
 });
 
-function innerDimensions(id){
+function innerDimensions(id){                   //get the dimensions with padding of element
     var node= document.getElementById(id)
     var computedStyle = getComputedStyle(node);
 
@@ -305,22 +316,22 @@ function innerDimensions(id){
     return { height, width };
 }
 
-function SetData(JsonArray){
-    for(var i=0; i<JsonArray.length; i++){
-        addData(JsonArray[i]);
+function SetData(JsonArray){                    //Shows the Data Passed as an array
+    for(var i=0; i<JsonArray.length; i++){   //Loop threw the data 
+        addData(JsonArray[i]);                 //add Data to CHart
     }
-    LiveChart.update();
+    LiveChart.update();                     //Update Chart
 }
 
-function addData(data, steps) {
-    var DataSteps = steps || DefaultStepSize;
-    var LD=LiveChart.data.labels;
-    LD.push((Number(LD[LD.length-1])+DataSteps).toString());
-    var DatasetData=LiveChart.data.datasets[0].data;
-    DatasetData.push(data);
+function addData(data, steps) {     
+    var DataSteps = steps || DefaultStepSize;       //If steps are passed set this steps else use default steps
+    var LD=LiveChart.data.labels;      //Get Chart labels
+    LD.push((Number(LD[LD.length-1])+DataSteps).toString());   //Set new label which is an increment of the Datasteps from the last label
+    var DatasetData=LiveChart.data.datasets[0].data;    //Get Chart Data
+    DatasetData.push(data);                             //ADd Data to CHart
 }
 
-function ClearData(){
+function ClearData(){                          //Reset Data of the Charts
     LiveChart.data.labels=["0"];
     LiveChart.data.datasets[0].data = [];
     LiveChart.update();
@@ -330,16 +341,16 @@ function ClearData(){
     BarChart.update();
 }
 
-function SetBarData(JsonObj){
-    for(var i=0; i<JsonObj.length; i++){
-        AddBarData(JsonObj[i].BreakPoint, JsonObj[i].MetaData.Name)
+function SetBarData(JsonObj){             //Sets the Bar Data
+    for(var i=0; i<JsonObj.length; i++){  //Go threw all of the data
+        AddBarData(JsonObj[i].BreakPoint, JsonObj[i].MetaData.Name)   //Get Breakpoint and Test Name and add it to the Bar Chart
     }
-    BarChart.update();
+    BarChart.update();   //Update Bar Chart
 }
 
-function AddBarData(data, label){
-    var BL=BarChart.data.labels;
-    BL.push(label)
-    var BD=BarChart.data.datasets[0].data;
-    BD.push(data);
+function AddBarData(data, label){           
+    var BL=BarChart.data.labels;    //Get Bar CHart Labels
+    BL.push(label)      //Set Bar Chart Label
+    var BD=BarChart.data.datasets[0].data;   //Get Bar CHart Data
+    BD.push(data);   //Set Bar Chart Data
 }
