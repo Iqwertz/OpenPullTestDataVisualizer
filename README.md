@@ -12,6 +12,11 @@ In this Mode the Files get Displayed and the user can select a Test Data. The Se
 ### View Breakpoints:
 The Breakpoints of the selected Tests are Shown on a Bar Chart
 
+## Libs & Frameworks:
+Angularjs,
+Chartjs,
+Font Awesome
+
 ## Data Format:
 The Data is formated as Json and stored in a .txt File. 
 
