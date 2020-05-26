@@ -91,6 +91,7 @@ app.controller('Visualizer', function($scope) {
     $scope.DisplayMetaData =[];       //Array Containig the MetaData of the Selected Test (Used for ng-repeat)  // Data: [Name, Data]
     $scope.DisplayParameter =[];  //Array Containig the Parameter of the Selected Test (Used for ng-repeat) // Data: [Name, Data]
     $scope.DisplayBreakpoint = 0;  //Breakpoint of the selected Test
+    $scope.DisplayMaximum = 0; //Maximum of the selected Test
 
     $scope.SetShowData = function(mode) {  //Called when Files are loaded
         $scope.ShowMode=mode;   //Set the mode
@@ -120,6 +121,7 @@ app.controller('Visualizer', function($scope) {
         $scope.DisplayMetaData =[];
         $scope.DisplayParameter =[];
         $scope.DisplayBreakpoint = 0;
+        $scope.DisplayMaximum = 0;
     }
 
     $scope.SetFile = function(FN){   //Called When Test is selected // FN = FileName
@@ -134,6 +136,7 @@ app.controller('Visualizer', function($scope) {
 
         $scope.CurrentTestData=$scope.Data[JsonIndex];  //Set Current Test Data
         $scope.DisplayBreakpoint = $scope.CurrentTestData.BreakPoint;   //Set Breakpoint
+        $scope.DisplayMaximum = $scope.CurrentTestData.Maximum;   //Set Maximum
 
         var TestDataNames;   //Get Names of JSON Metadata Properties in Array
         var TestDataValues;  //Get Data of Json Metadata Properties in Array
@@ -336,7 +339,7 @@ function ClearData(){                          //Reset Data of the Charts
     LiveChart.data.datasets[0].data = [];
     LiveChart.update();
 
-    BarChart.data.labels=["0"];
+    BarChart.data.labels=[];
     BarChart.data.datasets[0].data = [];
     BarChart.update();
 }
