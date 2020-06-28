@@ -192,14 +192,17 @@ ul {
   width: 100%;
   height: 100%; }
   .BreakpointContainer .Chart {
-    position: absolute;
+    position: relative;
     width: 90%;
     height: 80%;
     top: 10%;
     left: 3.5%;
     padding: 20px;
     border-radius: 30px;
-    background-color: #262626; }
+    background-color: #262626;
+    margin-bottom: 5%; }
+  .BreakpointContainer #BarChartCon {
+    margin-bottom: 10%; }
   .BreakpointContainer .Back {
     top: 5px;
     left: 10px;

@@ -16,8 +16,7 @@ var Mode = 0; //Mode 0 = View TestData / 1 = View Breakpoints
 fileInput.addEventListener('change', function() {
     var files = fileInput.files;                //get files
     var ErrorFiles = [];                        //Array of broken file names
-
-    for (var i = 0; i < files.length; i++) {         //loop threw files
+    for (var i = 0; i < files.length; i++) {         //loop through files
         (function(file) {
             var name = file.name;                    //get file name
             var reader = new FileReader();           //create File reader from the file Api
@@ -26,9 +25,10 @@ fileInput.addEventListener('change', function() {
                     try{                             //try creating JSON
                         var text = e.target.result;  //get data
                         var json = JSON.parse(text); //convert data to Json 
- 
+
                         json.MetaData.FileName = name;//add File Name to Json obj
                         JsonData.push(json);          //add Data to Json Array
+
                     }catch(error){
                         console.log(error);
                         ErrorFiles.push(name);        //If file ist broken push its name to the Error Array
@@ -52,7 +52,7 @@ fileInput.addEventListener('change', function() {
                     try{                             //try creating JSON
                         var text = e.target.result;  //get data
                         var json = JSON.parse(text); //convert data to Json 
- 
+
                         json.MetaData.FileName = name;//add File Name to Json obj
                         JsonData.push(json);          //add Data to Json Array
                     }catch(error){
@@ -106,6 +106,7 @@ app.controller('Visualizer', function($scope) {
         $scope.ShowMode=0;
         $scope.Data=[];
         JsonData=[];
+        fileInput.value=[];
     }
 
     $scope.BackToMenu = function(){    //Reset Graph  and selected Test //Back to Select Data Menu (only in ShowMode = 1)
@@ -161,13 +162,13 @@ app.controller('Visualizer', function($scope) {
 
 
         for(var i=0; i<TestDataParameterNames.length; i++){   //Set Parameter vor every Property
-                $scope.DisplayParameter.push([TestDataParameterNames[i], TestDataParameterValues[i]]);
-            
+            $scope.DisplayParameter.push([TestDataParameterNames[i], TestDataParameterValues[i]]);
+
         }
 
         console.log($scope.DisplayMetaData);
 
-        
+
         ///////Set swipe animation
         angular.element( document.querySelector( '.SelectTest' ) ).addClass('SelectTestMove');
 
@@ -180,6 +181,7 @@ app.controller('Visualizer', function($scope) {
 
     $scope.SetBreakpointData = function() {
         SetBarData(JsonData);
+        SetCompareLineData(JsonData);
     }
 });
 
@@ -187,7 +189,7 @@ var DefaultStepSize=1;   //Step Siz eof Displayed Data (y-Axis)
 
 var ctx = document.getElementById('LiveChartId');  //Get chart context 
 
- //Set Width and Height of the chart to fit container
+//Set Width and Height of the chart to fit container
 ctx.height=innerDimensions('ChartCon').height;   
 ctx.width=innerDimensions('ChartCon').width;
 
@@ -242,7 +244,7 @@ var LiveChart = new Chart(ctx, {  //create Chart.js Chart and Set options for th
 
 var ctx2 = document.getElementById('BreakpointChartId');  //Get Chart Index
 
- //Set Width and Height of the chart to fit container
+//Set Width and Height of the chart to fit container
 ctx2.height=innerDimensions('BarChartCon').height;
 ctx2.width=innerDimensions('BarChartCon').width;
 
@@ -250,16 +252,30 @@ var BarChart = new Chart(ctx2, {   //create Chart.js Chart and Set options for t
     type: 'bar',
     data: {
         labels: [],
-        datasets: [{
-            data: [],
-            backgroundColor: 'rgba(41, 121, 71, 0.48)',
-            borderColor: '#297947',
-            borderWidth: 1,
-            lineTension: 0,
-            lineTension: 0,
-            pointRadius: 0,
-            fill: false,
-        }]
+        datasets: [
+            {
+                label: "Maximum",
+                data: [],
+                backgroundColor: 'rgba(41, 121, 71, 0.48)',
+                borderColor: '#297947',
+                borderWidth: 1,
+                lineTension: 0,
+                lineTension: 0,
+                pointRadius: 0,
+                fill: false,
+            },
+            {
+                label: "Breakpoint",
+                data: [],
+                backgroundColor: 'rgba(41, 78, 121, 0.48)',
+                borderColor: '#293579',
+                borderWidth: 1,
+                lineTension: 0,
+                lineTension: 0,
+                pointRadius: 0,
+                fill: false,
+            }
+        ]
     }, 
     options: {
         responsive: true,
@@ -301,6 +317,55 @@ var BarChart = new Chart(ctx2, {   //create Chart.js Chart and Set options for t
                 scaleLabel: {
                     display: true,
                     labelString: 'Force (N)'
+                },
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+});
+
+var ctx3 = document.getElementById('CompareLineChartId');  //Get Chart Index
+
+//Set Width and Height of the chart to fit container
+ctx3.height=innerDimensions('CompareLineChartCon').height;
+ctx3.width=innerDimensions('CompareLineChartCon').width;
+
+var CompareLineChart = new Chart(ctx3, {   //create Chart.js Chart and Set options for the Bar Chart
+    type: 'line',                   
+    data: {
+        labels: [],
+        datasets: []
+    }, 
+    options: {
+        responsive: true,
+        tooltips: {
+            mode: 'index',
+            //intersect: false,
+        },
+        hover: {
+            mode: 'nearest', 
+            intersect: true
+        },
+        scales: {
+            xAxes: [{
+                display: true,
+                ticks: {
+                    min: 0,
+                    max: 100,
+                    stepSize: 0.5
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Time (s)'
+                }
+            }],
+            yAxes: [{
+                display: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Force (N)'
                 }
             }]
         }
@@ -320,7 +385,7 @@ function innerDimensions(id){                   //get the dimensions with paddin
 }
 
 function SetData(JsonArray){                    //Shows the Data Passed as an array
-    for(var i=0; i<JsonArray.length; i++){   //Loop threw the data 
+    for(var i=0; i<JsonArray.length; i++){   //Loop through the data 
         addData(JsonArray[i]);                 //add Data to CHart
     }
     LiveChart.update();                     //Update Chart
@@ -341,19 +406,64 @@ function ClearData(){                          //Reset Data of the Charts
 
     BarChart.data.labels=[];
     BarChart.data.datasets[0].data = [];
+    BarChart.data.datasets[1].data = [];
     BarChart.update();
+
+
+    CompareLineChart.data.labels=[];
+    CompareLineChart.data.datasets=[];
+    CompareLineChart.update();
 }
 
 function SetBarData(JsonObj){             //Sets the Bar Data
-    for(var i=0; i<JsonObj.length; i++){  //Go threw all of the data
-        AddBarData(JsonObj[i].BreakPoint, JsonObj[i].MetaData.Name)   //Get Breakpoint and Test Name and add it to the Bar Chart
+    for(var i=0; i<JsonObj.length; i++){  //Go through all of the data
+        AddBarData(JsonObj[i].BreakPoint,JsonObj[i].Maximum, JsonObj[i].MetaData.Name)   //Get Breakpoint and Test Name and add it to the Bar Chart
     }
     BarChart.update();   //Update Bar Chart
 }
 
-function AddBarData(data, label){           
+function AddBarData(BP, Max, label){           
     var BL=BarChart.data.labels;    //Get Bar CHart Labels
     BL.push(label)      //Set Bar Chart Label
-    var BD=BarChart.data.datasets[0].data;   //Get Bar CHart Data
-    BD.push(data);   //Set Bar Chart Data
+    var BPD=BarChart.data.datasets[1].data;   //Get Bar CHart BReakpoint Data 
+    BPD.push(BP);   //Set Bar Chart Breakpoint Data
+    var MaxD=BarChart.data.datasets[0].data;   //Get Bar CHart Maximum Data 
+    MaxD.push(Max);   //Set Bar Chart Maximum Data
+    console.log(Max)
+}
+
+
+function SetCompareLineData(JsonObj){             //Sets the Compare Line Data
+    var MaxDataLength = 0;  //The Longest Array (to scale the graph to the biggest dataset)
+
+    for(var i=0; i<JsonObj.length; i++){  //Go through all of the data
+        AddCompareLineData(JsonObj[i].Data, JsonObj[i].MetaData.Name)   //Get Data array and and Test Name and add it to the Line Chart
+        if(JsonObj[i].Data.length>MaxDataLength){
+            MaxDataLength=JsonObj[i].Data.length;
+        }
+    }
+
+    for(var i=0; i<=MaxDataLength; i++){  //Set Labels
+        CompareLineChart.data.labels.push(i.toString())      //Set Line Chart Labels
+    }
+
+    CompareLineChart.update();   //Update Chart
+}
+
+function AddCompareLineData(ArrData, label){   
+    var RandomColor = randomColor({
+   luminosity: 'dark'});  //get random Color
+    var NewDataset={   //Create Dataset
+        label: label,
+        data: ArrData,
+        backgroundColor: RandomColor,
+        borderColor: RandomColor,
+        borderWidth: 2,
+        lineTension: 0,
+        lineTension: 0,
+        pointRadius: 0,
+        fill: false,
+    };
+    var MaxD=CompareLineChart.data.datasets;   //Get Bar CHart datasets 
+    MaxD.push(NewDataset);   //Set Bar Chart Maximum Data
 }
