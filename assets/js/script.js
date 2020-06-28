@@ -38,10 +38,10 @@ fileInput.addEventListener('change', function() {
                         alert("Attention this Files are Broken: "+ErrorFiles.toString());
                     }
 
-                    if(JsonData.length!=0){ //if there is Valid Data Activate load Data
+                    if(JsonData.length!=0){ //if there is Valid Data go to select mode screen
                         var scope = angular.element(document.getElementById("Visualizer")).scope();
                         scope.$apply(function(){
-                            scope.SetShowData(Mode+1);
+                            scope.ShowMode=1;
                         });
                     }
 
@@ -72,20 +72,30 @@ fileInput.addEventListener('change', function() {
 //When Upload Btton clicked Set Mode and start File Api
 document.getElementById("DataFileInputButton").addEventListener('click', function() {
     fileInput.click();
+});
+
+//When Mode Button clicked select Mode
+document.getElementById("TestData").addEventListener('click', function() {
     Mode=0;
+    var scope = angular.element(document.getElementById("Visualizer")).scope();
+    scope.$apply(function(){
+        scope.SetShowData(Mode+2);
+    });
 });
 
-document.getElementById("BreakpointFileInputButton").addEventListener('click', function() {
-    fileInput.click();
+document.getElementById("CompareData").addEventListener('click', function() {
     Mode=1;
+    var scope = angular.element(document.getElementById("Visualizer")).scope();
+    scope.$apply(function(){
+        scope.SetShowData(Mode+2);
+    });
 });
-
 /////////////////////////////Angular ///// Data Visualizer////////////////////////////
 
 var app = angular.module("app", []);
 
 app.controller('Visualizer', function($scope) {
-    $scope.ShowMode=0; // 0 = SelectScreen / 1 = View TestData / 2 = Breakpoints
+    $scope.ShowMode=0; // 0 = SelectDataScreen / 1=SelectModeScreen / 2 = View TestData / 3 = Breakpoints
     $scope.Data=[];   //Data Array Containing Json Data
     $scope.CurrentTestData = {};   //Obj containig the selected Test Data
     $scope.DisplayMetaData =[];       //Array Containig the MetaData of the Selected Test (Used for ng-repeat)  // Data: [Name, Data]
@@ -96,12 +106,17 @@ app.controller('Visualizer', function($scope) {
     $scope.SetShowData = function(mode) {  //Called when Files are loaded
         $scope.ShowMode=mode;   //Set the mode
         $scope.Data=JsonData;    //set the data
-        if($scope.ShowMode==2){   //If Breakpoint analyses
+        if($scope.ShowMode==3){   //If Breakpoint analyses
             $scope.SetBreakpointData();     //Draw Bar Graph
         }
     }
+    
+     $scope.BackToSelectMode = function(){   //Reset Mode when Back to menu arrow is clicked
+        $scope.BackToMenu();
+        $scope.ShowMode=1;
+    }
 
-    $scope.BackToSelectMenu = function(){   //Reset Data when Back arrow is clicked
+    $scope.BackToSelectData = function(){   //Reset Data when Back arrow is clicked
         $scope.BackToMenu();
         $scope.ShowMode=0;
         $scope.Data=[];
@@ -109,7 +124,7 @@ app.controller('Visualizer', function($scope) {
         fileInput.value=[];
     }
 
-    $scope.BackToMenu = function(){    //Reset Graph  and selected Test //Back to Select Data Menu (only in ShowMode = 1)
+    $scope.BackToMenu = function(){    //Reset Graph  and selected Test //Back to Select Data Menu (only in ShowMode = 2)
 
         angular.element( document.querySelector( '.SelectTest' ) ).removeClass('SelectTestMove');
 
@@ -404,6 +419,7 @@ function ClearData(){                          //Reset Data of the Charts
     LiveChart.data.datasets[0].data = [];
     LiveChart.update();
 
+    
     BarChart.data.labels=[];
     BarChart.data.datasets[0].data = [];
     BarChart.data.datasets[1].data = [];
@@ -452,7 +468,7 @@ function SetCompareLineData(JsonObj){             //Sets the Compare Line Data
 
 function AddCompareLineData(ArrData, label){   
     var RandomColor = randomColor({
-   luminosity: 'dark'});  //get random Color
+        luminosity: 'dark'});  //get random Color
     var NewDataset={   //Create Dataset
         label: label,
         data: ArrData,

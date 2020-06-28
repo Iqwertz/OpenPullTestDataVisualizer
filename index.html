@@ -17,21 +17,35 @@
                 <div class="SelectDataPreviewOverlay">
                     <div class="SelectContainer">
                         Select Test Data
-
                         <div>
                             <button id="DataFileInputButton">
-                                <i class="fas fa-plus"></i> View TestData
-                            </button>
-                            <button id="BreakpointFileInputButton">
-                                <i class="fas fa-plus"></i> View Breakpoints
+                                <i class="fas fa-plus"></i> Select Data
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="SelectDataPreview" ng-show="ShowMode==1">
+                <div class="SelectDataPreviewOverlay">
+                    <div class="SelectContainer">
+                        Select Test Mode
+                        <div>
+                            <button id="TestData">
+                                <i class="fas fa-plus"></i> View Testdata
+                            </button>
+                            <button id="CompareData">
+                                <i class="fas fa-plus"></i> Compare Testdata
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div ng-click="BackToSelectData();" class="Back">
+                    <i class="fas fa-arrow-left"></i>
+                </div>
+            </div>
 
-            <div class="VisualizerContainer" ng-show="ShowMode==1">
-                <div ng-click="BackToSelectMenu();" class="Back">
+            <div class="VisualizerContainer" ng-show="ShowMode==2">
+                <div ng-click="BackToSelectMode();" class="Back">
                     <i class="fas fa-arrow-left"></i>
                 </div>
 
@@ -93,17 +107,17 @@
                 </div>  
             </div>
 
-            <div class="BreakpointContainer" ng-show="ShowMode==2">
-                <div ng-click="BackToSelectMenu();" class="Back">
+            <div class="BreakpointContainer" ng-show="ShowMode==3">
+                <div ng-click="BackToSelectMode();" class="Back">
                     <i class="fas fa-arrow-left"></i>
                 </div>
 
                 <div class="Chart" id="BarChartCon">
                     <canvas id="BreakpointChartId"></canvas>
                 </div>
-                
+
                 <div class="Chart" id="CompareLineChartCon">
-                  <canvas id="CompareLineChartId"></canvas>
+                    <canvas id="CompareLineChartId"></canvas>
                 </div>
             </div>
         </div>
