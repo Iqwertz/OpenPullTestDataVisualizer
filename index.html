@@ -112,6 +112,22 @@
                     <i class="fas fa-arrow-left"></i>
                 </div>
 
+                <div class="OpenChooseTest">
+                    <i class="fas fa-cog"></i>
+                </div>
+
+                <div class="ChooseTestContainer">
+                    <ul>
+                        <!-- <li ng-repeat="data in Data">-->
+                        <li ng-repeat="data in Data">
+                            <div class="TestItem"> 
+                                <input type="checkbox" ng-model="data.Selected" ng-change="SetBreakpointData()">
+                                {{data.MetaData.Name}}
+                            </div> 
+                        </li>
+                    </ul>
+                </div>
+
                 <div class="Chart" id="BarChartCon">
                     <canvas id="BreakpointChartId"></canvas>
                 </div>

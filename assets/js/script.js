@@ -106,12 +106,17 @@ app.controller('Visualizer', function($scope) {
     $scope.SetShowData = function(mode) {  //Called when Files are loaded
         $scope.ShowMode=mode;   //Set the mode
         $scope.Data=JsonData;    //set the data
+        console.log($scope.Data);
+        for(let key in $scope.Data){  //Add Selected par. to data array (for data seletion in Mode Compare Test Data)
+            $scope.Data[key].Selected=true;
+        }
+        console.log($scope.Data);
         if($scope.ShowMode==3){   //If Breakpoint analyses
             $scope.SetBreakpointData();     //Draw Bar Graph
         }
     }
-    
-     $scope.BackToSelectMode = function(){   //Reset Mode when Back to menu arrow is clicked
+
+    $scope.BackToSelectMode = function(){   //Reset Mode when Back to menu arrow is clicked
         $scope.BackToMenu();
         $scope.ShowMode=1;
     }
@@ -195,8 +200,10 @@ app.controller('Visualizer', function($scope) {
     }
 
     $scope.SetBreakpointData = function() {
-        SetBarData(JsonData);
-        SetCompareLineData(JsonData);
+        ClearData();
+        SetBarData($scope.Data);
+        SetCompareLineData($scope.Data);
+        console.log("Breakpoint Set");
     }
 });
 
@@ -419,7 +426,7 @@ function ClearData(){                          //Reset Data of the Charts
     LiveChart.data.datasets[0].data = [];
     LiveChart.update();
 
-    
+
     BarChart.data.labels=[];
     BarChart.data.datasets[0].data = [];
     BarChart.data.datasets[1].data = [];
@@ -433,7 +440,9 @@ function ClearData(){                          //Reset Data of the Charts
 
 function SetBarData(JsonObj){             //Sets the Bar Data
     for(var i=0; i<JsonObj.length; i++){  //Go through all of the data
-        AddBarData(JsonObj[i].BreakPoint,JsonObj[i].Maximum, JsonObj[i].MetaData.Name)   //Get Breakpoint and Test Name and add it to the Bar Chart
+        if(JsonObj[i].Selected){          //Check if data is selected
+            AddBarData(JsonObj[i].BreakPoint,JsonObj[i].Maximum, JsonObj[i].MetaData.Name)   //Get Breakpoint and Test Name and add it to the Bar Chart
+        }
     }
     BarChart.update();   //Update Bar Chart
 }
@@ -453,9 +462,11 @@ function SetCompareLineData(JsonObj){             //Sets the Compare Line Data
     var MaxDataLength = 0;  //The Longest Array (to scale the graph to the biggest dataset)
 
     for(var i=0; i<JsonObj.length; i++){  //Go through all of the data
-        AddCompareLineData(JsonObj[i].Data, JsonObj[i].MetaData.Name)   //Get Data array and and Test Name and add it to the Line Chart
-        if(JsonObj[i].Data.length>MaxDataLength){
-            MaxDataLength=JsonObj[i].Data.length;
+        if(JsonObj[i].Selected){          //Check if data is seleceted
+            AddCompareLineData(JsonObj[i].Data, JsonObj[i].MetaData.Name)   //Get Data array and and Test Name and add it to the Line Chart
+            if(JsonObj[i].Data.length>MaxDataLength){
+                MaxDataLength=JsonObj[i].Data.length;
+            }
         }
     }
 

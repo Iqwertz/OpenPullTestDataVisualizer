@@ -212,8 +212,62 @@ ul {
   .BreakpointContainer .Back {
     top: 5px;
     left: 10px;
-    position: absolute;
+    position: fixed;
     color: #e2e2e2;
     font-size: 3em; }
+  .BreakpointContainer .OpenChooseTest {
+    z-index: 2;
+    top: 10px;
+    right: 10px;
+    position: fixed;
+    color: #e2e2e2;
+    font-size: 3em; }
+  .BreakpointContainer .ChooseTestContainer:hover,
+  .BreakpointContainer .OpenChooseTest:hover + .ChooseTestContainer {
+    visibility: visible;
+    opacity: 1; }
+  .BreakpointContainer .ChooseTestContainer {
+    opacity: 0;
+    visibility: hidden;
+    z-index: 1;
+    position: fixed;
+    top: 5px;
+    right: 0;
+    height: auto;
+    max-height: 90%;
+    overflow-y: scroll;
+    width: 40%;
+    background-color: #262626;
+    color: #e2e2e2;
+    padding: 10px 25px 30px 0px;
+    border-radius: 15px;
+    border: 2px solid #5367ff;
+    transition: opacity ease-in-out .5s; }
+    .BreakpointContainer .ChooseTestContainer .TestItem {
+      box-sizing: border-box;
+      position: relative;
+      width: 80%;
+      height: 30px;
+      left: 10%;
+      top: 15px;
+      border-radius: 5px;
+      background-color: #e2e2e2;
+      color: #121212;
+      font-size: 1.2em;
+      padding: 3px 10px;
+      margin: 5px 0;
+      overflow-x: hidden;
+      transition: background-color .5s; }
+      .BreakpointContainer .ChooseTestContainer .TestItem::-webkit-scrollbar {
+        width: 12px; }
+      .BreakpointContainer .ChooseTestContainer .TestItem::-webkit-scrollbar-track {
+        background: #262626;
+        border-radius: 4px; }
+      .BreakpointContainer .ChooseTestContainer .TestItem::-webkit-scrollbar-thumb {
+        background-color: #e2e2e2;
+        border-radius: 20px;
+        border: 2px solid #262626; }
+    .BreakpointContainer .ChooseTestContainer .TestItem:hover {
+      background-color: #c9c9c9; }
 
 /*# sourceMappingURL=main.css.map */
