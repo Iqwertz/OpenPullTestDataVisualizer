@@ -103,10 +103,15 @@ app.controller('Visualizer', function($scope) {
     $scope.DisplayParameter =[];  //Array Containig the Parameter of the Selected Test (Used for ng-repeat) // Data: [Name, Data]
     $scope.DisplayBreakpoint = 0;  //Breakpoint of the selected Test
     $scope.DisplayMaximum = 0; //Maximum of the selected Test
-    
+
     $scope.isLocalStorageData = urlParams.get("localData");
-    if($scope.isLocalStorageData=="true"){
+    if($scope.isLocalStorageData=="true"){  //when there is available localstorage data
         console.log(JSON.parse(localStorage.getItem("openPullTestData"))); 
+        var json = JSON.parse(localStorage.getItem("openPullTestData")) //convert data to Json 
+
+        json.MetaData.FileName = json.MetaData.Name;//add File Name to Json obj
+        JsonData.push(json);          //add Data to Json Array
+        $scope.ShowMode=1;   //change ShowMode
     }
 
     $scope.SetShowData = function(mode) {  //Called when Files are loaded
