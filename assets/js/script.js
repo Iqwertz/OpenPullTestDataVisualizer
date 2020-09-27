@@ -91,6 +91,7 @@ document.getElementById("CompareData").addEventListener('click', function() {
     });
 });
 /////////////////////////////Angular ///// Data Visualizer////////////////////////////
+const urlParams = new URLSearchParams(window.location.search);
 
 var app = angular.module("app", []);
 
@@ -102,6 +103,11 @@ app.controller('Visualizer', function($scope) {
     $scope.DisplayParameter =[];  //Array Containig the Parameter of the Selected Test (Used for ng-repeat) // Data: [Name, Data]
     $scope.DisplayBreakpoint = 0;  //Breakpoint of the selected Test
     $scope.DisplayMaximum = 0; //Maximum of the selected Test
+    
+    $scope.isLocalStorageData = urlParams.get("localData");
+    if($scope.isLocalStorageData=="true"){
+        console.log(JSON.parse(localStorage.getItem("openPullTestData"))); 
+    }
 
     $scope.SetShowData = function(mode) {  //Called when Files are loaded
         $scope.ShowMode=mode;   //Set the mode
