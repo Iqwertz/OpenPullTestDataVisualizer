@@ -163,7 +163,6 @@ ul {
     h1{
         color: $accent2;
         text-align: center;
-
     }
 
     .TestItem{
@@ -321,6 +320,15 @@ ul {
         box-shadow: 8px 8px 10px #000;
         transition: opacity ease-in-out .5s;
 
+        .SelcetAllButton{
+            padding: 5px;
+            border-radius: 7px;
+            background-color: $accent2; 
+            color: #000;
+            margin: 5px 15px;
+            width: 100px;
+        }
+
         .TestItem{
             box-sizing: border-box;
             position: relative;
@@ -349,7 +357,7 @@ ul {
                 border-radius: 20px;
                 border: 2px solid $bg-color;
             }
-            
+
 
         }
 

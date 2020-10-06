@@ -102,6 +102,7 @@ app.controller('Visualizer', function($scope) {
     $scope.DisplayParameter =[];  //Array Containig the Parameter of the Selected Test (Used for ng-repeat) // Data: [Name, Data]
     $scope.DisplayBreakpoint = 0;  //Breakpoint of the selected Test
     $scope.DisplayMaximum = 0; //Maximum of the selected Test
+    $scope.SelectAllBool = true; //Var holding the status of the select all button
 
     $scope.SetShowData = function(mode) {  //Called when Files are loaded
         $scope.ShowMode=mode;   //Set the mode
@@ -197,6 +198,14 @@ app.controller('Visualizer', function($scope) {
         document.querySelector( '.MetaData' ).style.transform = "translate(0px, -"+height+"px)";
 
         SetData($scope.CurrentTestData.Data); //Set Line Chart Data
+    }
+
+    $scope.SelectAll = function() {
+        for(let key in $scope.Data){  //Set all data to select all status
+            $scope.Data[key].Selected=$scope.SelectAllBool;
+        }
+        
+        $scope.SetBreakpointData();
     }
 
     $scope.SetBreakpointData = function() {
