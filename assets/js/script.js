@@ -4,14 +4,14 @@
 
 ///create input type file element 
 var element = document.createElement('div');
-element.innerHTML = '<input type="file" multiple >';
+element.innerHTML = '<input type="file" accept="application/JSON, .txt" multiple >';
 var fileInput = element.firstChild;
 /////
 
 
 var JsonData = [];  //Array which contains The files in form of a Json obj
 
-var Mode = 0; //Mode 0 = View TestData / 1 = View Breakpoints
+var Mode = 0; //Mode 0 = View TestData / 1 = View Breakpoints /2 = Standard Diviation
 
 fileInput.addEventListener('change', function() {
     var files = fileInput.files;                //get files
@@ -85,6 +85,15 @@ document.getElementById("TestData").addEventListener('click', function() {
 
 document.getElementById("CompareData").addEventListener('click', function() {
     Mode=1;
+    var scope = angular.element(document.getElementById("Visualizer")).scope();
+    scope.$apply(function(){
+        scope.SetShowData(Mode+2);
+    });
+});
+
+
+document.getElementById("StandardDiviation").addEventListener('click', function() {
+    Mode=2;
     var scope = angular.element(document.getElementById("Visualizer")).scope();
     scope.$apply(function(){
         scope.SetShowData(Mode+2);
@@ -368,8 +377,27 @@ ctx3.width=innerDimensions('CompareLineChartCon').width;
 var CompareLineChart = new Chart(ctx3, {   //create Chart.js Chart and Set options for the Bar Chart
     type: 'line',                   
     data: {
-        labels: [],
-        datasets: []
+        labels: ['0'],
+        datasets: [
+            {
+                label: 'Dataset',
+                //backgroundColor: '#d95f02',
+                borderColor: '#d95f02',
+                borderWidth: 1,
+                data: [
+                    56,
+                    33,
+                    78,
+                    54
+                ],
+                errorBars: {
+                    'January': {plus: 15, minus: 34},
+                    'February': {plus: 15, minus: 3},
+                    'March': {plus: 35, minus: 14},
+                    'April': {plus: 45, minus: 4}
+                }
+            }
+        ]
     }, 
     options: {
         responsive: true,
@@ -404,6 +432,111 @@ var CompareLineChart = new Chart(ctx3, {   //create Chart.js Chart and Set optio
         }
     }
 });
+
+
+var ctx4 = document.getElementById('ErrorChartId');  //Get Chart Index
+
+//Set Width and Height of the chart to fit container
+ctx4.height=innerDimensions('ErrorChartCon').height;
+ctx4.width=innerDimensions('ErrorChartCon').width;
+
+var ErrorChart = new Chart(ctx4, {   //create Chart.js Chart and Set options for the Bar Chart
+    type: 'barWithErrorBars',                   
+    data: { 
+        labels: ['A', 'B', 'A', 'B', 'A', 'B', 'A', 'B', 'A', 'B'],
+        datasets: [
+            {
+                errorBarLineWidth: 3,
+                 errorBarWhiskerLineWidth: 3,
+                backgroundColor: 'rgba(0, 118, 44, 0.48)',
+                borderColor: '#297947',
+                data: [
+                    {
+                        y: 4,
+                        yMin: 7,
+                        yMax: 3,
+                    },
+                    {
+                        y: 2,
+                        yMin: 1,
+                        yMax: 3,
+                    },
+                    {
+                        y: 8,
+                        yMin: 10,
+                        yMax: 3,
+                    },
+                    {
+                        y: 3,
+                        yMin: 4,
+                        yMax: 2,
+                    },
+                    {
+                        y: 1,
+                        yMin: 1,
+                        yMax: 2,
+                    },
+                    {
+                        y: 10,
+                        yMin: 13,
+                        yMax: 7,
+                    },
+                    {
+                        y: 25,
+                        yMin: 28,
+                        yMax: 20,
+                    },
+                    {
+                        y: 2,
+                        yMin: 3,
+                        yMax: 1,
+                    },
+                    {
+                        y: 9,
+                        yMin: 12,
+                        yMax: 8,
+                    },
+                    {
+                        y: 23,
+                        yMin: 20,
+                        yMax: 24,
+                    },
+                ]
+            }
+        ]
+    }, 
+    options: {
+        responsive: true,
+        tooltips: {
+            mode: 'index',
+            //intersect: false,
+        },
+        hover: {
+            mode: 'nearest', 
+            intersect: true
+        },
+        scales: {
+            xAxes: [{
+                display: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Samples'
+                }
+            }],
+            yAxes: [{
+                display: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Force (N)'
+                },
+                ticks: {
+                    beginAtZero: true,
+                    stepSize: 30,
+                },
+            }]
+        },
+
+    }});
 
 function innerDimensions(id){                   //get the dimensions with padding of element
     var node= document.getElementById(id)
