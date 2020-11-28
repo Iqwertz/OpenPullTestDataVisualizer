@@ -287,9 +287,20 @@ ul {
     height: 80%;
     top: 10%;
     left: 3.5%;
-    padding: 20px;
+    padding: 20px 20px 60px 20px;
     border-radius: 30px;
     background-color: #e2e2e2;
     margin-bottom: 5%; }
+    .StandardDiviationContainer .Chart .Downloads {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%); }
+      .StandardDiviationContainer .Chart .Downloads button {
+        border-radius: 10px;
+        border: 0;
+        background-color: #5367ff;
+        padding: 10px;
+        font-size: 1.5em;
+        cursor: pointer; }
 
 /*# sourceMappingURL=main.css.map */

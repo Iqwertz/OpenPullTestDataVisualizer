@@ -10,6 +10,7 @@ var fileInput = element.firstChild;
 
 
 var JsonData = [];  //Array which contains The files in form of a Json obj
+var GruopdData = []; 
 
 var Mode = 0; //Mode 0 = View TestData / 1 = View Breakpoints /2 = Standard Diviation
 
@@ -99,13 +100,17 @@ document.getElementById("StandardDiviation").addEventListener('click', function(
         scope.SetShowData(Mode+2);
     });
 });
-
+ 
 
 document.getElementById("takeScreenshot").addEventListener('click', function() {
     console.log("Screenshot");
     html2canvas(document.querySelector("#ErrorChartId")).then(canvas => {
          saveAs(canvas.toDataURL(), 'OpenPullTestData.png');
     });
+});
+
+document.getElementById("DownloadCSV").addEventListener('click', function() {
+    GenerateCSV();
 });
 
 /////////////////////////////Angular ///// Data Visualizer////////////////////////////
@@ -263,14 +268,23 @@ app.controller('Visualizer', function($scope) {
             labels: [],
             datasets: [
                 {
+                    label: 'Zugfestigkeit',
                     data: [
                     ]
                 }
             ]
         };
-
+///Calculate Mean and SD for each gruop and add it to the Data object
         gruopedIndexes.forEach((value, key) => {
-            console.log(value, key);
+            
+            let gruopedDataObject = {
+                name: key,
+                sampleSize: -1,
+                values: [],
+                mean: -1,
+                sd: -1,
+            }
+            
             let breakpoints = [];
             for(let i=0; i<value.length; i++){
                 breakpoints.push($scope.Data[value[i]].BreakPoint)
@@ -283,14 +297,21 @@ app.controller('Visualizer', function($scope) {
 
             dataObject = {
                 y: mean,
-                yMin: mean-sd,
+                yMin: mean-sd<0?0:mean-sd,
                 yMax: mean+sd
             }
+            
+            gruopedDataObject.sampleSize = breakpoints.length;
+            gruopedDataObject.values = breakpoints;
+            gruopedDataObject.mean = mean;
+            gruopedDataObject.sd = sd;
+            
+            GruopdData.push(gruopedDataObject);
 
             ErrorChartData.datasets[0].data.push(dataObject);
         })
         //console.log(ErrorChart);
-        SetErroChart(ErrorChartData);
+        SetErroChart(ErrorChartData);  //Set the generated Data
     }
 });
 
@@ -502,6 +523,7 @@ var ErrorChart = new Chart(ctx4, {   //create Chart.js Chart and Set options for
         labels: [],
         datasets: [
             {
+                label: 'Zugfestigkeit',
             }
         ]
     }, 
@@ -531,7 +553,7 @@ var ErrorChart = new Chart(ctx4, {   //create Chart.js Chart and Set options for
                 },
                 ticks: {
                     beginAtZero: true,
-                    stepSize: 30,
+                    stepSize: 100,
                 },
             }]
         },
@@ -587,7 +609,7 @@ function ClearData(){                          //Reset Data of the Charts
             errorBarLineWidth: 3,
             errorBarWhiskerLineWidth: 3,
             backgroundColor: 'rgba(17, 95, 86, 0.7)',
-
+            label: 'Zugfestigkeit',
             data: []
         }
     ];
@@ -699,3 +721,40 @@ function saveAs(uri, filename) {
       window.open(uri);
     }
   }
+
+function GenerateCSV(){  //converts the grouped data to an scv table
+    MaxSampleSize = 0;
+    for(let data of GruopdData){
+        if(data.sampleSize>MaxSampleSize){
+            MaxSampleSize=data.sampleSize;
+        }
+    }
+    
+    let csvData = '"sep=,"\r\n';
+    let header = '"Name","Stichproben Anzahl",';
+    for(let i=0; i<MaxSampleSize; i++){
+        header += '"Wert' + (i+1) + '",';
+    }
+    header += '"Mittelwert","Standardabweichung"\r\n';
+    
+    csvData += header;
+    
+    for(let data of GruopdData){
+        let row = '"' + data.name + '","' + data.sampleSize + '",';
+        
+        for(let i=0; i<MaxSampleSize; i++){
+            let sample = data.values[i];
+            if(!sample){
+                sample = '/';
+            }
+            row += '"' + sample + '",';
+        }
+        
+        row += '"' + data.mean.toFixed(2) + '","' + data.sd.toFixed(2) + '"\r\n'
+        
+        csvData += row;
+        
+    }
+    csvData = 'data:text/csv,' +csvData;
+    saveAs(csvData, "OpenPullTestData.csv");  //error when download 
+}
