@@ -377,10 +377,21 @@ ul {
         height: 80%;
         top: 10%;
         left: 3.5%;
-        padding: 20px 20px 60px 20px;
+        padding: 20px 20px 150px 20px;
         border-radius: 30px;
         background-color: $accent2;
         margin-bottom: 5%;
+        
+        .fileNameTextfield{
+            position: relative;
+            width: 200px;
+            left: calc(50% - 100px);
+            margin: 10px;
+            font-size: 1.3em;
+            border-radius: 5px;
+            border: 1px 1px #000;
+            padding: 4px;
+        }
 
         .Downloads{
             position: absolute;

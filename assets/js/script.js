@@ -100,12 +100,21 @@ document.getElementById("StandardDiviation").addEventListener('click', function(
         scope.SetShowData(Mode+2);
     });
 });
- 
+
 
 document.getElementById("takeScreenshot").addEventListener('click', function() {
     console.log("Screenshot");
+     let filename=document.getElementById('filenametf').value;
+    console.log(filename)
+    if(filename.length>0){
+        if(filename.slice(-4)!='.png'){
+            filename += '.png';
+        }
+    }else{
+        filename='OpenPullTestData.png';
+    }
     html2canvas(document.querySelector("#ErrorChartId")).then(canvas => {
-         saveAs(canvas.toDataURL(), 'OpenPullTestData.png');
+        saveAs(canvas.toDataURL(), filename);
     });
 });
 
@@ -274,9 +283,9 @@ app.controller('Visualizer', function($scope) {
                 }
             ]
         };
-///Calculate Mean and SD for each gruop and add it to the Data object
+        ///Calculate Mean and SD for each gruop and add it to the Data object
         gruopedIndexes.forEach((value, key) => {
-            
+
             let gruopedDataObject = {
                 name: key,
                 sampleSize: -1,
@@ -284,7 +293,7 @@ app.controller('Visualizer', function($scope) {
                 mean: -1,
                 sd: -1,
             }
-            
+
             let breakpoints = [];
             for(let i=0; i<value.length; i++){
                 breakpoints.push($scope.Data[value[i]].BreakPoint)
@@ -300,12 +309,12 @@ app.controller('Visualizer', function($scope) {
                 yMin: mean-sd<0?0:mean-sd,
                 yMax: mean+sd
             }
-            
+
             gruopedDataObject.sampleSize = breakpoints.length;
             gruopedDataObject.values = breakpoints;
             gruopedDataObject.mean = mean;
             gruopedDataObject.sd = sd;
-            
+
             GruopdData.push(gruopedDataObject);
 
             ErrorChartData.datasets[0].data.push(dataObject);
@@ -706,21 +715,21 @@ function StandardDiviation(data){   //Calculate the Standard deviation of an arr
 function saveAs(uri, filename) {
     var link = document.createElement('a');
     if (typeof link.download === 'string') {
-      link.href = uri;
-      link.download = filename;
+        link.href = uri;
+        link.download = filename;
 
-      //Firefox requires the link to be in the body
-      document.body.appendChild(link);
+        //Firefox requires the link to be in the body
+        document.body.appendChild(link);
 
-      //simulate click
-      link.click();
+        //simulate click
+        link.click();
 
-      //remove the link when done
-      document.body.removeChild(link);
+        //remove the link when done
+        document.body.removeChild(link);
     } else {
-      window.open(uri);
+        window.open(uri);
     }
-  }
+}
 
 function GenerateCSV(){  //converts the grouped data to an scv table
     MaxSampleSize = 0;
@@ -729,19 +738,19 @@ function GenerateCSV(){  //converts the grouped data to an scv table
             MaxSampleSize=data.sampleSize;
         }
     }
-    
+
     let csvData = '"sep=,"\r\n';
     let header = '"Name","Stichproben Anzahl",';
     for(let i=0; i<MaxSampleSize; i++){
         header += '"Wert' + (i+1) + '",';
     }
     header += '"Mittelwert","Standardabweichung"\r\n';
-    
+
     csvData += header;
-    
+
     for(let data of GruopdData){
         let row = '"' + data.name + '","' + data.sampleSize + '",';
-        
+
         for(let i=0; i<MaxSampleSize; i++){
             let sample = data.values[i];
             if(!sample){
@@ -749,12 +758,23 @@ function GenerateCSV(){  //converts the grouped data to an scv table
             }
             row += '"' + sample + '",';
         }
-        
+
         row += '"' + data.mean.toFixed(2) + '","' + data.sd.toFixed(2) + '"\r\n'
-        
+
         csvData += row;
-        
+
     }
+
+    let filename=document.getElementById('filenametf').value;
+    console.log(filename)
+    if(filename.length>0){
+        if(filename.slice(-4)!='.csv'){
+            filename += '.csv';
+        }
+    }else{
+        filename='OpenPullTestData.csv';
+    }
+
     csvData = 'data:text/csv,' +csvData;
-    saveAs(csvData, "OpenPullTestData.csv");  //error when download 
+    saveAs(csvData, filename);  //error when download 
 }
