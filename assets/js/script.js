@@ -104,7 +104,7 @@ document.getElementById("StandardDiviation").addEventListener('click', function(
 
 document.getElementById("takeScreenshot").addEventListener('click', function() {
     console.log("Screenshot");
-     let filename=document.getElementById('filenametf').value;
+    let filename=document.getElementById('filenametf').value;
     console.log(filename)
     if(filename.length>0){
         if(filename.slice(-4)!='.png'){
@@ -255,7 +255,7 @@ app.controller('Visualizer', function($scope) {
     $scope.calculateData = function(){
         ClearData();
 
-        let gruopedIndexes = new Map();  //get all the filenames with index and gruop the,
+        let gruopedIndexes = new Map();  //get all the filenames with index and gruop them,
         for(let i=0; i<$scope.Data.length; i++){
             let fname = $scope.Data[i].MetaData.FileName;
             fname.replace('(', '');
@@ -271,7 +271,27 @@ app.controller('Visualizer', function($scope) {
                 gruopedIndexes.set(fname,[i]);
             }
         }
+        
+        //Sort gruoped indexes by Mean
+         gruopedIndexes = new Map([...gruopedIndexes.entries()].sort((a,b) => {
+                let breakpointsA = [];
+                let breakpointsB = [];
+             
+                let Avalue = a[1];
+                let Bvalue = b[1];
+             
+                for(let i=0; i<Avalue.length; i++){
+                    breakpointsA.push($scope.Data[Avalue[i]].BreakPoint);
+                }
+                for(let i=0; i<Bvalue.length; i++){
+                    breakpointsB.push($scope.Data[Bvalue[i]].BreakPoint);
+                }
+                
+                let meanA = Mean(breakpointsA);
+                let meanB = Mean(breakpointsB);
 
+                return meanA-meanB;
+            }));
 
         let ErrorChartData = { 
             labels: [],
@@ -320,6 +340,14 @@ app.controller('Visualizer', function($scope) {
             ErrorChartData.datasets[0].data.push(dataObject);
         })
         //console.log(ErrorChart);
+        ErrorChartData.datasets[0].data.sort(
+            (a,b) => {
+                console.log(a,b);
+                return a.y-b.y;
+            }
+        );
+
+
         SetErroChart(ErrorChartData);  //Set the generated Data
     }
 });
@@ -684,12 +712,8 @@ function AddCompareLineData(ArrData, label){
 function SetErroChart(data){
     var EL=ErrorChart.data.labels;    //Get Labels
     EL.push.apply(EL, data.labels);//Set Labels
-    console.log(data.labels);
-    console.log(EL);
     var ED=ErrorChart.data.datasets[0];   //Set Labels
     ED.data = data.datasets[0].data;   //Set Data
-
-    console.log(ErrorChart.data);
 
     ErrorChart.update();
 } 
