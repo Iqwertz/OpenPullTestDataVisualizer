@@ -9,7 +9,8 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.9/angular.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
         <script src="assets/js/Chart.ErrorBars.js"></script>
-
+        <script src="assets/js/chartjs-plugin-annotation.min.js"></script>
+        <script src="assets/js/statistics.min.js"></script>
         <script src="assets/js/randomcolor.js"></script>
         <script src="https://kit.fontawesome.com/096ef5e38d.js" crossorigin="anonymous"></script>
     </head>
@@ -39,7 +40,7 @@
                                 <i class="fas fa-plus"></i> Compare Testdata
                             </button>
                             <button id="StandardDiviation">
-                                <i class="fas fa-plus"></i> Standard Deviation
+                                <i class="fas fa-plus"></i> Statistical Analysis
                             </button>
                         </div>
                     </div>
@@ -157,7 +158,25 @@
                     </div>
                 </div>
 
+                <div class="Chart">
+                    <h1>Unpaired Two tailed T-Test</h1>
+                    <h3>Select Default Value:</h3>
+                    <div class="selectcon">
+                        <select 
+                                ng-model="tTestSelect.selectedOption"
+                                >
+                            <option ng-repeat="option in tTestSelect.availableOptions" value="{{option.id}}">{{option.name}}</option>
+                        </select>
 
+                        <button class="calculate" id="calculateTTest">Calculate</button>
+
+
+                        <div id="TTestCon">
+                            <canvas id="TTestResultChartId"></canvas>
+                        </div>
+
+                    </div>
+                </div>
             </div>
         </div>
         <script src="assets/js/script.js"></script>

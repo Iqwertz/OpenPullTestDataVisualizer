@@ -381,7 +381,17 @@ ul {
         border-radius: 30px;
         background-color: $accent2;
         margin-bottom: 5%;
-        
+
+        h1, h3{
+            text-align: center;
+        }
+
+        select{
+            position: relative;
+            width: 200px;
+            left: calc(50% - 100px);
+        }
+
         .fileNameTextfield{
             position: relative;
             width: 200px;
@@ -397,15 +407,37 @@ ul {
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
+        }
 
-            button{
-                border-radius: 10px;
-                border: 0;
-                background-color: $accent1;
-                padding: 10px;
-                font-size: 1.5em;
-                cursor: pointer;
+        .selectcon{
+            position: relative;
+            width: 200px;
+            left: calc(50% - 100px);
+            
+            select{
+                margin: 15px 0;
             }
+            
+            button{
+                width: 100%;
+            }
+        }
+
+        button{
+            border-radius: 10px;
+            border: 0;
+            background-color: $accent1;
+            padding: 10px;
+            font-size: 1.5em;
+            cursor: pointer;
+        }
+        
+        #TTestCon{
+            position: absolute;
+            width: 85vw;
+            height: 50vh;
+                        left: 50%;
+            transform: translateX(-50%);
         }
     }
 

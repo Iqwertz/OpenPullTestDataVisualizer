@@ -122,6 +122,14 @@ document.getElementById("DownloadCSV").addEventListener('click', function() {
     GenerateCSV();
 });
 
+document.getElementById("calculateTTest").addEventListener('click', function() {
+    var scope = angular.element(document.getElementById("Visualizer")).scope();
+    scope.$apply(function(){
+        scope.CalculateTTest();
+    });
+
+});
+
 /////////////////////////////Angular ///// Data Visualizer////////////////////////////
 const urlParams = new URLSearchParams(window.location.search);
 
@@ -135,6 +143,12 @@ app.controller('Visualizer', function($scope) {
     $scope.DisplayParameter =[];  //Array Containig the Parameter of the Selected Test (Used for ng-repeat) // Data: [Name, Data]
     $scope.DisplayBreakpoint = 0;  //Breakpoint of the selected Test
     $scope.DisplayMaximum = 0; //Maximum of the selected Test
+
+    $scope.tTestSelect = {  //scope vars of the ttest select
+        availableOptions: [
+        ],
+        selectedOption: {} //This sets the default value of the select in the ui
+    };
 
     $scope.isLocalStorageData = urlParams.get("localData");
     if($scope.isLocalStorageData=="true"){  //when there is available localstorage data
@@ -271,27 +285,27 @@ app.controller('Visualizer', function($scope) {
                 gruopedIndexes.set(fname,[i]);
             }
         }
-        
-        //Sort gruoped indexes by Mean
-         gruopedIndexes = new Map([...gruopedIndexes.entries()].sort((a,b) => {
-                let breakpointsA = [];
-                let breakpointsB = [];
-             
-                let Avalue = a[1];
-                let Bvalue = b[1];
-             
-                for(let i=0; i<Avalue.length; i++){
-                    breakpointsA.push($scope.Data[Avalue[i]].BreakPoint);
-                }
-                for(let i=0; i<Bvalue.length; i++){
-                    breakpointsB.push($scope.Data[Bvalue[i]].BreakPoint);
-                }
-                
-                let meanA = Mean(breakpointsA);
-                let meanB = Mean(breakpointsB);
 
-                return meanA-meanB;
-            }));
+        //Sort gruoped indexes by Mean
+        gruopedIndexes = new Map([...gruopedIndexes.entries()].sort((a,b) => {
+            let breakpointsA = [];
+            let breakpointsB = [];
+
+            let Avalue = a[1];
+            let Bvalue = b[1];
+
+            for(let i=0; i<Avalue.length; i++){
+                breakpointsA.push($scope.Data[Avalue[i]].BreakPoint);
+            }
+            for(let i=0; i<Bvalue.length; i++){
+                breakpointsB.push($scope.Data[Bvalue[i]].BreakPoint);
+            }
+
+            let meanA = Mean(breakpointsA);
+            let meanB = Mean(breakpointsB);
+
+            return meanA-meanB;
+        }));
 
         let ErrorChartData = { 
             labels: [],
@@ -347,20 +361,71 @@ app.controller('Visualizer', function($scope) {
             }
         );
 
+        $scope.setTTestSelect();
 
         SetErroChart(ErrorChartData);  //Set the generated Data
     }
+
+    $scope.setTTestSelect = function(){
+        $scope.tTestSelect = {  //scope vars of the ttest select
+            availableOptions: [
+            ],
+            selectedOption: {} //This sets the default value of the select in the ui
+        };
+
+        for(let i=0; i<GruopdData.length; i++){
+            let obj = {
+                id: i,
+                name: GruopdData[i].name,
+            } 
+            $scope.tTestSelect.availableOptions.push(obj);
+        }
+    }
+
+    $scope.CalculateTTest = function(){
+        TTestChart.data.labels=[];
+        TTestChart.data.datasets[0].data=[];
+        TTestChart.update();
+
+        let TTestResults = [];
+
+        let standardSampleId=$scope.tTestSelect.selectedOption;
+        console.log(standardSampleId);
+        if(!isNaN(standardSampleId)){
+            for(let i=0; i<GruopdData.length; i++){
+                if(i!=standardSampleId){
+                    let testData = structureSampleData(GruopdData[standardSampleId], GruopdData[i]);
+                    let testVars = { sample1: 'metric', sample2: 'metric'  };
+                    let stats = new Statistics(testData, testVars);
+                    var treatmentSuccess = stats.studentsTTestTwoSamples('sample1', 'sample2');
+                    let result = {
+                        name: GruopdData[i].name,
+                        results: treatmentSuccess,
+                    }
+                    TTestResults.push(result);
+
+                    TTestChart.data.labels.push(result.name);
+                    TTestChart.data.datasets[0].data.push(result.results.pTwoSided);
+                }
+            }
+
+
+        }
+        console.log(TTestResults);
+        TTestChart.update();
+    }
+
 });
 
 var DefaultStepSize=1;   //Step Siz eof Displayed Data (y-Axis)
 
-var ctx = document.getElementById('LiveChartId');  //Get chart context 
+var ctx1 = document.getElementById('LiveChartId');  //Get chart context 
 
 //Set Width and Height of the chart to fit container
-ctx.height=innerDimensions('ChartCon').height;   
-ctx.width=innerDimensions('ChartCon').width;
+ctx1.height=innerDimensions('ChartCon').height;   
+ctx1.width=innerDimensions('ChartCon').width;
 
-var LiveChart = new Chart(ctx, {  //create Chart.js Chart and Set options for the Line Chart
+var LiveChart = new Chart(ctx1, {  //create Chart.js Chart and Set options for the Line Chart
     type: 'line',                   
     data: {
         labels: ['0'],
@@ -547,7 +612,6 @@ var CompareLineChart = new Chart(ctx3, {   //create Chart.js Chart and Set optio
     }
 });
 
-
 var ctx4 = document.getElementById('ErrorChartId');  //Get Chart Index
 
 //Set Width and Height of the chart to fit container
@@ -596,6 +660,90 @@ var ErrorChart = new Chart(ctx4, {   //create Chart.js Chart and Set options for
         },
 
     }});
+
+var ctx5 = document.getElementById('TTestResultChartId');  //Get Chart Index
+
+//Set Width and Height of the chart to fit container
+ctx5.height=innerDimensions('TTestCon').height;
+ctx5.width=innerDimensions('TTestCon').width;
+
+var TTestChart = new Chart(ctx5, {   //create Chart.js Chart and Set options for the Bar Chart
+    type: 'horizontalBar',
+    data: {
+        labels: [],
+        datasets: [
+            { 
+                label: "P Value",
+                data: [],
+                backgroundColor: 'rgba(41, 121, 71, 0.48)',
+                borderColor: '#297947',
+                borderWidth: 1,
+                lineTension: 0,
+                lineTension: 0,
+                pointRadius: 0,
+                fill: false,
+            }
+        ]
+    }, 
+    options: {
+        responsive: true,
+        animation:{
+          "onComplete": function() {
+                var chartInstance = this.chart,
+                  ctx = chartInstance.ctx;
+ 
+                ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontSize, Chart.defaults.global.defaultFontStyle, Chart.defaults.global.defaultFontFamily);
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'bottom';
+ 
+                this.data.datasets.forEach(function(dataset, i) {
+                  var meta = chartInstance.controller.getDatasetMeta(i);
+                  meta.data.forEach(function(bar, index) {
+                    var data = dataset.data[index].toFixed(6);
+                    ctx.fillText(data, bar._model.x + 28, bar._model.y+ 5);
+                  });
+                });
+              }  
+        },
+        tooltips: false,
+        scales: { 
+            xAxes: [{
+                display: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: 'p value'
+                    
+                },
+                ticks: {
+                    beginAtZero: true,
+                    stepSize: .05,
+                },
+            }],
+            yAxes: [{
+                display: true,
+                scaleLabel: {
+                    display: false,
+                }
+            }]
+        },
+
+        annotation: {
+            annotations: [{
+                type: 'line',
+                mode: 'vertical', 
+                scaleID: 'x-axis-0',
+                value: 0.05,
+                borderColor: 'rgb(255, 66, 66)',
+                borderWidth: 2,
+                label: {
+                    enabled: false,
+                    content: 'Test label'
+                }
+            }]
+        }
+    }
+});
+
 
 function innerDimensions(id){                   //get the dimensions with padding of element
     var node= document.getElementById(id)
@@ -651,6 +799,11 @@ function ClearData(){                          //Reset Data of the Charts
         }
     ];
     ErrorChart.update();
+    GruopdData= [];
+
+    TTestChart.data.labels=[];
+    TTestChart.data.datasets[0].data=[];
+    TTestChart.update();
 }
 
 function SetBarData(JsonObj){             //Sets the Bar Data
@@ -719,13 +872,11 @@ function SetErroChart(data){
 } 
 
 function Mean(data){  //Calculate the Mean of an Array
-    console.log(data);
     let sum = 0.0;
     for (let i of data){
         sum += Number(i);
         console.log(i);
     }
-    console.log(sum);
     return sum/data.length;
 }
 
@@ -801,4 +952,20 @@ function GenerateCSV(){  //converts the grouped data to an scv table
 
     csvData = 'data:text/csv,' +csvData;
     saveAs(csvData, filename);  //error when download 
+}
+
+function structureSampleData(gDO1, gDO2){
+    let data = [];
+
+    for(let i=0; i<gDO1.sampleSize; i++){
+        let dataObj = {
+            sample1: gDO1.values[i],
+            sample2: gDO2.values[i],
+        }
+        data.push(dataObj);
+    }
+
+    return data;
+
+
 }
