@@ -318,6 +318,13 @@ ul {
         margin: 15px 0; }
       .StandardDiviationContainer .Chart .selectcon button {
         width: 100%; }
+      .StandardDiviationContainer .Chart .selectcon .Downloads {
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 530px; }
+        .StandardDiviationContainer .Chart .selectcon .Downloads button {
+          width: 250px; }
     .StandardDiviationContainer .Chart button {
       border-radius: 10px;
       border: 0;
@@ -326,7 +333,7 @@ ul {
       font-size: 1.5em;
       cursor: pointer; }
     .StandardDiviationContainer .Chart #TTestCon {
-      position: absolute;
+      position: relative;
       width: 85vw;
       height: 50vh;
       left: 50%;

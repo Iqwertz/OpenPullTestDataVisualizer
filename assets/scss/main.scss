@@ -413,13 +413,24 @@ ul {
             position: relative;
             width: 200px;
             left: calc(50% - 100px);
-            
+
             select{
                 margin: 15px 0;
             }
-            
+
             button{
                 width: 100%;
+            }
+
+            .Downloads{
+                position: relative;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 530px;
+                
+                        button{
+                            width: 250px;
+        }
             }
         }
 
@@ -431,12 +442,12 @@ ul {
             font-size: 1.5em;
             cursor: pointer;
         }
-        
+
         #TTestCon{
-            position: absolute;
+            position: relative;
             width: 85vw;
             height: 50vh;
-                        left: 50%;
+            left: 50%;
             transform: translateX(-50%);
         }
     }

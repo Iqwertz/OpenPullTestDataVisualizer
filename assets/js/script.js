@@ -11,6 +11,7 @@ var fileInput = element.firstChild;
 
 var JsonData = [];  //Array which contains The files in form of a Json obj
 var GruopdData = []; 
+let TTestResults = [];
 
 var Mode = 0; //Mode 0 = View TestData / 1 = View Breakpoints /2 = Standard Diviation
 
@@ -113,13 +114,33 @@ document.getElementById("takeScreenshot").addEventListener('click', function() {
     }else{
         filename='OpenPullTestData.png';
     }
-    html2canvas(document.querySelector("#ErrorChartId")).then(canvas => {
+    html2canvas(document.querySelector("#ErrorChartId"),{scrollX: 0,scrollY: -window.scrollY}).then(canvas => {
         saveAs(canvas.toDataURL(), filename);
     });
 });
 
 document.getElementById("DownloadCSV").addEventListener('click', function() {
     GenerateCSV();
+});
+
+document.getElementById("TTestTakeScreenshot").addEventListener('click', function() {
+    console.log("Screenshot");
+    let filename=document.getElementById('filenametf').value;
+    console.log(filename)
+    if(filename.length>0){
+        if(filename.slice(-4)!='.png'){
+            filename += '.png';
+        }
+    }else{
+        filename='OpenPullTTest.png';
+    }
+    html2canvas(document.querySelector("#TTestResultChartId"),{scrollX: 0,scrollY: -window.scrollY}).then(canvas => {
+        saveAs(canvas.toDataURL(), filename);
+    });
+});
+
+document.getElementById("TTtestDownloadCSV").addEventListener('click', function() {
+    TTestGenerateCSV();
 });
 
 document.getElementById("calculateTTest").addEventListener('click', function() {
@@ -387,7 +408,7 @@ app.controller('Visualizer', function($scope) {
         TTestChart.data.datasets[0].data=[];
         TTestChart.update();
 
-        let TTestResults = [];
+        TTestResults = [];
 
         let standardSampleId=$scope.tTestSelect.selectedOption;
         console.log(standardSampleId);
@@ -948,6 +969,37 @@ function GenerateCSV(){  //converts the grouped data to an scv table
         }
     }else{
         filename='OpenPullTestData.csv';
+    }
+
+    csvData = 'data:text/csv,' +csvData;
+    saveAs(csvData, filename);  //error when download 
+}
+
+function TTestGenerateCSV(){  //converts the grouped data to an scv table
+
+    let alpha = 0.05;
+    let csvData = '"sep=,"\r\n';
+    let header = '"Name","T-Wert","P-Wert","Alpha","Statistisch Signifikant"\r\n';
+    
+    csvData += header;
+
+    for(let data of TTestResults){
+        let signifikant = data.results.pTwoSided<alpha?'Ja' : 'Nein' 
+        let row = '"' + data.name + '","' + data.results.tStatistic + '","' + data.results.pTwoSided + '","' + alpha + '","' + signifikant + '"\r\n';
+
+        csvData += row;
+
+    }
+    console.log(csvData);
+
+    let filename=document.getElementById('filenametf').value;
+    console.log(filename)
+    if(filename.length>0){
+        if(filename.slice(-4)!='.csv'){
+            filename += '.csv';
+        }
+    }else{
+        filename='OpenPullTTest.csv';
     }
 
     csvData = 'data:text/csv,' +csvData;
