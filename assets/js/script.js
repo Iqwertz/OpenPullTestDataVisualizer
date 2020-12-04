@@ -377,7 +377,6 @@ app.controller('Visualizer', function($scope) {
         //console.log(ErrorChart);
         ErrorChartData.datasets[0].data.sort(
             (a,b) => {
-                console.log(a,b);
                 return a.y-b.y;
             }
         );
@@ -424,15 +423,19 @@ app.controller('Visualizer', function($scope) {
                         results: treatmentSuccess,
                     }
                     TTestResults.push(result);
-
-                    TTestChart.data.labels.push(result.name);
-                    TTestChart.data.datasets[0].data.push(result.results.pTwoSided);
                 }
             }
 
+            TTestResults.sort((a,b) => {
+                return b.results.pTwoSided-a.results.pTwoSided;
+            })
+
+            for(let data of TTestResults){
+                TTestChart.data.labels.push(data.name);
+                TTestChart.data.datasets[0].data.push(data.results.pTwoSided);
+            }
 
         }
-        console.log(TTestResults);
         TTestChart.update();
     }
 
@@ -709,22 +712,22 @@ var TTestChart = new Chart(ctx5, {   //create Chart.js Chart and Set options for
     options: {
         responsive: true,
         animation:{
-          "onComplete": function() {
+            "onComplete": function() {
                 var chartInstance = this.chart,
-                  ctx = chartInstance.ctx;
- 
+                    ctx = chartInstance.ctx;
+
                 ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontSize, Chart.defaults.global.defaultFontStyle, Chart.defaults.global.defaultFontFamily);
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'bottom';
- 
+
                 this.data.datasets.forEach(function(dataset, i) {
-                  var meta = chartInstance.controller.getDatasetMeta(i);
-                  meta.data.forEach(function(bar, index) {
-                    var data = dataset.data[index].toFixed(6);
-                    ctx.fillText(data, bar._model.x + 28, bar._model.y+ 5);
-                  });
+                    var meta = chartInstance.controller.getDatasetMeta(i);
+                    meta.data.forEach(function(bar, index) {
+                        var data = dataset.data[index].toFixed(6);
+                        ctx.fillText(data, bar._model.x + 28, bar._model.y+ 5);
+                    });
                 });
-              }  
+            }  
         },
         tooltips: false,
         scales: { 
@@ -733,7 +736,7 @@ var TTestChart = new Chart(ctx5, {   //create Chart.js Chart and Set options for
                 scaleLabel: {
                     display: true,
                     labelString: 'p value'
-                    
+
                 },
                 ticks: {
                     beginAtZero: true,
@@ -980,7 +983,7 @@ function TTestGenerateCSV(){  //converts the grouped data to an scv table
     let alpha = 0.05;
     let csvData = '"sep=,"\r\n';
     let header = '"Name","T-Wert","P-Wert","Alpha","Statistisch Signifikant"\r\n';
-    
+
     csvData += header;
 
     for(let data of TTestResults){
