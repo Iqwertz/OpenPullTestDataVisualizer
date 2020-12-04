@@ -244,6 +244,13 @@ ul {
     border: 2px solid #5367ff;
     box-shadow: 8px 8px 10px #000;
     transition: opacity ease-in-out .5s; }
+    .BreakpointContainer .ChooseTestContainer .SelcetAllButton {
+      padding: 5px;
+      border-radius: 7px;
+      background-color: #e2e2e2;
+      color: #000;
+      margin: 5px 15px;
+      width: 100px; }
     .BreakpointContainer .ChooseTestContainer .TestItem {
       box-sizing: border-box;
       position: relative;
