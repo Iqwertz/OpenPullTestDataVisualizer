@@ -4,14 +4,16 @@
 
 ///create input type file element 
 var element = document.createElement('div');
-element.innerHTML = '<input type="file" multiple >';
+element.innerHTML = '<input type="file" accept="application/JSON, .txt" multiple >';
 var fileInput = element.firstChild;
 /////
 
 
 var JsonData = [];  //Array which contains The files in form of a Json obj
+var GruopdData = []; 
+let TTestResults = [];
 
-var Mode = 0; //Mode 0 = View TestData / 1 = View Breakpoints
+var Mode = 0; //Mode 0 = View TestData / 1 = View Breakpoints /2 = Standard Diviation
 
 fileInput.addEventListener('change', function() {
     var files = fileInput.files;                //get files
@@ -76,7 +78,7 @@ document.getElementById("DataFileInputButton").addEventListener('click', functio
 
 //When Mode Button clicked select Mode
 document.getElementById("TestData").addEventListener('click', function() {
-    Mode=0;
+    Mode=0; 
     var scope = angular.element(document.getElementById("Visualizer")).scope();
     scope.$apply(function(){
         scope.SetShowData(Mode+2);
@@ -90,7 +92,67 @@ document.getElementById("CompareData").addEventListener('click', function() {
         scope.SetShowData(Mode+2);
     });
 });
+
+
+document.getElementById("StandardDiviation").addEventListener('click', function() {
+    Mode=2;
+    var scope = angular.element(document.getElementById("Visualizer")).scope();
+    scope.$apply(function(){
+        scope.SetShowData(Mode+2);
+    });
+});
+
+
+document.getElementById("takeScreenshot").addEventListener('click', function() {
+    console.log("Screenshot");
+    let filename=document.getElementById('filenametf').value;
+    console.log(filename)
+    if(filename.length>0){
+        if(filename.slice(-4)!='.png'){
+            filename += '.png';
+        }
+    }else{
+        filename='OpenPullTestData.png';
+    }
+    html2canvas(document.querySelector("#ErrorChartId"),{scrollX: 0,scrollY: -window.scrollY}).then(canvas => {
+        saveAs(canvas.toDataURL(), filename);
+    });
+});
+
+document.getElementById("DownloadCSV").addEventListener('click', function() {
+    GenerateCSV();
+});
+
+document.getElementById("TTestTakeScreenshot").addEventListener('click', function() {
+    console.log("Screenshot");
+    let filename=document.getElementById('filenametf').value;
+    console.log(filename)
+    if(filename.length>0){
+        if(filename.slice(-4)!='.png'){
+            filename += '.png';
+        }
+    }else{
+        filename='OpenPullTTest.png';
+    }
+    html2canvas(document.querySelector("#TTestResultChartId"),{scrollX: 0,scrollY: -window.scrollY}).then(canvas => {
+        saveAs(canvas.toDataURL(), filename);
+    });
+});
+
+document.getElementById("TTtestDownloadCSV").addEventListener('click', function() {
+    TTestGenerateCSV();
+});
+
+document.getElementById("calculateTTest").addEventListener('click', function() {
+    var scope = angular.element(document.getElementById("Visualizer")).scope();
+    scope.$apply(function(){
+        scope.CalculateTTest();
+    });
+
+});
+
 /////////////////////////////Angular ///// Data Visualizer////////////////////////////
+const urlParams = new URLSearchParams(window.location.search);
 
 var app = angular.module("app", []);
 
@@ -104,6 +166,22 @@ app.controller('Visualizer', function($scope) {
     $scope.DisplayMaximum = 0; //Maximum of the selected Test
     $scope.SelectAllBool = true; //Var holding the status of the select all button
 
+    $scope.tTestSelect = {  //scope vars of the ttest select
+        availableOptions: [
+        ],
+        selectedOption: {} //This sets the default value of the select in the ui
+    };
+
+    $scope.isLocalStorageData = urlParams.get("localData");
+    if($scope.isLocalStorageData=="true"){  //when there is available localstorage data
+        console.log(JSON.parse(localStorage.getItem("openPullTestData"))); 
+        var json = JSON.parse(localStorage.getItem("openPullTestData")) //convert data to Json 
+
+        json.MetaData.FileName = json.MetaData.Name;//add File Name to Json obj
+        JsonData.push(json);          //add Data to Json Array
+        $scope.ShowMode=1;   //change ShowMode
+    }
+
     $scope.SetShowData = function(mode) {  //Called when Files are loaded
         $scope.ShowMode=mode;   //Set the mode
         $scope.Data=JsonData;    //set the data
@@ -114,6 +192,9 @@ app.controller('Visualizer', function($scope) {
         console.log($scope.Data);
         if($scope.ShowMode==3){   //If Breakpoint analyses
             $scope.SetBreakpointData();     //Draw Bar Graph
+        }
+        if($scope.ShowMode==4){
+            $scope.calculateData();
         }
     }
 
@@ -214,17 +295,170 @@ app.controller('Visualizer', function($scope) {
         SetCompareLineData($scope.Data);
         console.log("Breakpoint Set");
     }
+
+    $scope.calculateData = function(){
+        ClearData();
+
+        let gruopedIndexes = new Map();  //get all the filenames with index and gruop them,
+        for(let i=0; i<$scope.Data.length; i++){
+            let fname = $scope.Data[i].MetaData.FileName;
+            fname.replace('(', '');
+            fname.replace(')', '');
+            fname = (fname.split('.').slice(0, -1)).join('.');
+            fname = fname.slice(0, -1); 
+
+            if(gruopedIndexes.has(fname)){
+                let gruopIndexes = gruopedIndexes.get(fname);
+                gruopIndexes.push(i);
+                gruopedIndexes.set(fname, gruopIndexes);
+            }else{
+                gruopedIndexes.set(fname,[i]);
+            }
+        }
+
+        //Sort gruoped indexes by Mean
+        gruopedIndexes = new Map([...gruopedIndexes.entries()].sort((a,b) => {
+            let breakpointsA = [];
+            let breakpointsB = [];
+
+            let Avalue = a[1];
+            let Bvalue = b[1];
+
+            for(let i=0; i<Avalue.length; i++){
+                breakpointsA.push($scope.Data[Avalue[i]].BreakPoint);
+            }
+            for(let i=0; i<Bvalue.length; i++){
+                breakpointsB.push($scope.Data[Bvalue[i]].BreakPoint);
+            }
+
+            let meanA = Mean(breakpointsA);
+            let meanB = Mean(breakpointsB);
+
+            return meanA-meanB;
+        }));
+
+        let ErrorChartData = { 
+            labels: [],
+            datasets: [
+                {
+                    label: 'Zugfestigkeit',
+                    data: [
+                    ]
+                }
+            ]
+        };
+        ///Calculate Mean and SD for each gruop and add it to the Data object
+        gruopedIndexes.forEach((value, key) => {
+
+            let gruopedDataObject = {
+                name: key,
+                sampleSize: -1,
+                values: [],
+                mean: -1,
+                sd: -1,
+            }
+
+            let breakpoints = [];
+            for(let i=0; i<value.length; i++){
+                breakpoints.push($scope.Data[value[i]].BreakPoint)
+            }
+
+            let mean = Mean(breakpoints);
+            let sd = StandardDiviation(breakpoints);
+
+            ErrorChartData.labels.push(key);
+
+            dataObject = {
+                y: mean,
+                yMin: mean-sd<0?0:mean-sd,
+                yMax: mean+sd
+            }
+
+            gruopedDataObject.sampleSize = breakpoints.length;
+            gruopedDataObject.values = breakpoints;
+            gruopedDataObject.mean = mean;
+            gruopedDataObject.sd = sd;
+
+            GruopdData.push(gruopedDataObject);
+
+            ErrorChartData.datasets[0].data.push(dataObject);
+        })
+        //console.log(ErrorChart);
+        ErrorChartData.datasets[0].data.sort(
+            (a,b) => {
+                return a.y-b.y;
+            }
+        );
+
+        $scope.setTTestSelect();
+
+        SetErroChart(ErrorChartData);  //Set the generated Data
+    }
+
+    $scope.setTTestSelect = function(){
+        $scope.tTestSelect = {  //scope vars of the ttest select
+            availableOptions: [
+            ],
+            selectedOption: {} //This sets the default value of the select in the ui
+        };
+
+        for(let i=0; i<GruopdData.length; i++){
+            let obj = {
+                id: i,
+                name: GruopdData[i].name,
+            } 
+            $scope.tTestSelect.availableOptions.push(obj);
+        }
+    }
+
+    $scope.CalculateTTest = function(){
+        TTestChart.data.labels=[];
+        TTestChart.data.datasets[0].data=[];
+        TTestChart.update();
+
+        TTestResults = [];
+
+        let standardSampleId=$scope.tTestSelect.selectedOption;
+        console.log(standardSampleId);
+        if(!isNaN(standardSampleId)){
+            for(let i=0; i<GruopdData.length; i++){
+                if(i!=standardSampleId){
+                    let testData = structureSampleData(GruopdData[standardSampleId], GruopdData[i]);
+                    let testVars = { sample1: 'metric', sample2: 'metric'  };
+                    let stats = new Statistics(testData, testVars);
+                    var treatmentSuccess = stats.studentsTTestTwoSamples('sample1', 'sample2');
+                    let result = {
+                        name: GruopdData[i].name,
+                        results: treatmentSuccess,
+                    }
+                    TTestResults.push(result);
+                }
+            }
+
+            TTestResults.sort((a,b) => {
+                return b.results.pTwoSided-a.results.pTwoSided;
+            })
+
+            for(let data of TTestResults){
+                TTestChart.data.labels.push(data.name);
+                TTestChart.data.datasets[0].data.push(data.results.pTwoSided);
+            }
+
+        }
+        TTestChart.update();
+    }
+
 });
 
 var DefaultStepSize=1;   //Step Siz eof Displayed Data (y-Axis)
 
-var ctx = document.getElementById('LiveChartId');  //Get chart context 
+var ctx1 = document.getElementById('LiveChartId');  //Get chart context 
 
 //Set Width and Height of the chart to fit container
-ctx.height=innerDimensions('ChartCon').height;   
-ctx.width=innerDimensions('ChartCon').width;
+ctx1.height=innerDimensions('ChartCon').height;   
+ctx1.width=innerDimensions('ChartCon').width;
 
-var LiveChart = new Chart(ctx, {  //create Chart.js Chart and Set options for the Line Chart
+var LiveChart = new Chart(ctx1, {  //create Chart.js Chart and Set options for the Line Chart
     type: 'line',                   
     data: {
         labels: ['0'],
@@ -366,8 +600,16 @@ ctx3.width=innerDimensions('CompareLineChartCon').width;
 var CompareLineChart = new Chart(ctx3, {   //create Chart.js Chart and Set options for the Bar Chart
     type: 'line',                   
     data: {
-        labels: [],
-        datasets: []
+        labels: ['0'],
+        datasets: [
+            {
+                label: 'Dataset',
+                //backgroundColor: '#d95f02',
+                borderColor: '#d95f02',
+                borderWidth: 1,
+                data: [],
+            }
+        ]
     }, 
     options: {
         responsive: true,
@@ -402,6 +644,139 @@ var CompareLineChart = new Chart(ctx3, {   //create Chart.js Chart and Set optio
         }
     }
 });
+
+var ctx4 = document.getElementById('ErrorChartId');  //Get Chart Index
+
+//Set Width and Height of the chart to fit container
+ctx4.height=innerDimensions('ErrorChartCon').height;
+ctx4.width=innerDimensions('ErrorChartCon').width;
+
+var ErrorChart = new Chart(ctx4, {   //create Chart.js Chart and Set options for the Bar Chart
+    type: 'barWithErrorBars',                   
+    data: { 
+        labels: [],
+        datasets: [
+            {
+                label: 'Zugfestigkeit',
+            }
+        ]
+    }, 
+    options: {
+        responsive: true,
+        tooltips: {
+            mode: 'index',
+            //intersect: false,
+        },
+        hover: {
+            mode: 'nearest', 
+            intersect: true
+        },
+        scales: {
+            xAxes: [{
+                display: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Samples'
+                }
+            }],
+            yAxes: [{
+                display: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Force (N)'
+                },
+                ticks: {
+                    beginAtZero: true,
+                    stepSize: 100,
+                },
+            }]
+        },
+
+    }});
+
+var ctx5 = document.getElementById('TTestResultChartId');  //Get Chart Index
+
+//Set Width and Height of the chart to fit container
+ctx5.height=innerDimensions('TTestCon').height;
+ctx5.width=innerDimensions('TTestCon').width;
+
+var TTestChart = new Chart(ctx5, {   //create Chart.js Chart and Set options for the Bar Chart
+    type: 'horizontalBar',
+    data: {
+        labels: [],
+        datasets: [
+            { 
+                label: "P Value",
+                data: [],
+                backgroundColor: 'rgba(41, 121, 71, 0.48)',
+                borderColor: '#297947',
+                borderWidth: 1,
+                lineTension: 0,
+                lineTension: 0,
+                pointRadius: 0,
+                fill: false,
+            }
+        ]
+    }, 
+    options: {
+        responsive: true,
+        animation:{
+            "onComplete": function() {
+                var chartInstance = this.chart,
+                    ctx = chartInstance.ctx;
+
+                ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontSize, Chart.defaults.global.defaultFontStyle, Chart.defaults.global.defaultFontFamily);
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'bottom';
+
+                this.data.datasets.forEach(function(dataset, i) {
+                    var meta = chartInstance.controller.getDatasetMeta(i);
+                    meta.data.forEach(function(bar, index) {
+                        var data = dataset.data[index].toFixed(6);
+                        ctx.fillText(data, bar._model.x + 28, bar._model.y+ 5);
+                    });
+                });
+            }  
+        },
+        tooltips: false,
+        scales: { 
+            xAxes: [{
+                display: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: 'p value'
+
+                },
+                ticks: {
+                    beginAtZero: true,
+                    stepSize: .05,
+                },
+            }],
+            yAxes: [{
+                display: true,
+                scaleLabel: {
+                    display: false,
+                }
+            }]
+        },
+
+        annotation: {
+            annotations: [{
+                type: 'line',
+                mode: 'vertical', 
+                scaleID: 'x-axis-0',
+                value: 0.05,
+                borderColor: 'rgb(255, 66, 66)',
+                borderWidth: 2,
+                label: {
+                    enabled: false,
+                    content: 'Test label'
+                }
+            }]
+        }
+    }
+});
+
 
 function innerDimensions(id){                   //get the dimensions with padding of element
     var node= document.getElementById(id)
@@ -445,6 +820,23 @@ function ClearData(){                          //Reset Data of the Charts
     CompareLineChart.data.labels=[];
     CompareLineChart.data.datasets=[];
     CompareLineChart.update();
+
+    ErrorChart.data.labels=[];
+    ErrorChart.data.datasets=[
+        {
+            errorBarLineWidth: 3,
+            errorBarWhiskerLineWidth: 3,
+            backgroundColor: 'rgba(17, 95, 86, 0.7)',
+            label: 'Zugfestigkeit',
+            data: []
+        }
+    ];
+    ErrorChart.update();
+    GruopdData= [];
+
+    TTestChart.data.labels=[];
+    TTestChart.data.datasets[0].data=[];
+    TTestChart.update();
 }
 
 function SetBarData(JsonObj){             //Sets the Bar Data
@@ -463,7 +855,6 @@ function AddBarData(BP, Max, label){
     BPD.push(BP);   //Set Bar Chart Breakpoint Data
     var MaxD=BarChart.data.datasets[0].data;   //Get Bar CHart Maximum Data 
     MaxD.push(Max);   //Set Bar Chart Maximum Data
-    console.log(Max)
 }
 
 
@@ -502,4 +893,143 @@ function AddCompareLineData(ArrData, label){
     };
     var MaxD=CompareLineChart.data.datasets;   //Get Bar CHart datasets 
     MaxD.push(NewDataset);   //Set Bar Chart Maximum Data
+}
+
+function SetErroChart(data){
+    var EL=ErrorChart.data.labels;    //Get Labels
+    EL.push.apply(EL, data.labels);//Set Labels
+    var ED=ErrorChart.data.datasets[0];   //Set Labels
+    ED.data = data.datasets[0].data;   //Set Data
+
+    ErrorChart.update();
+} 
+
+function Mean(data){  //Calculate the Mean of an Array
+    let sum = 0.0;
+    for (let i of data){
+        sum += Number(i);
+        console.log(i);
+    }
+    return sum/data.length;
+}
+
+function StandardDiviation(data){   //Calculate the Standard deviation of an array
+    let m = Mean(data);
+    return Math.sqrt(data.reduce(function (sq, n) {
+        return sq + Math.pow(n - m, 2);
+    }, 0) / (data.length - 1));
+}
+
+function saveAs(uri, filename) {
+    var link = document.createElement('a');
+    if (typeof link.download === 'string') {
+        link.href = uri;
+        link.download = filename;
+
+        //Firefox requires the link to be in the body
+        document.body.appendChild(link);
+
+        //simulate click
+        link.click();
+
+        //remove the link when done
+        document.body.removeChild(link);
+    } else {
+        window.open(uri);
+    }
+}
+
+function GenerateCSV(){  //converts the grouped data to an scv table
+    MaxSampleSize = 0;
+    for(let data of GruopdData){
+        if(data.sampleSize>MaxSampleSize){
+            MaxSampleSize=data.sampleSize;
+        }
+    }
+
+    let csvData = '"sep=,"\r\n';
+    let header = '"Name","Stichproben Anzahl",';
+    for(let i=0; i<MaxSampleSize; i++){
+        header += '"Wert' + (i+1) + '",';
+    }
+    header += '"Mittelwert","Standardabweichung"\r\n';
+
+    csvData += header;
+
+    for(let data of GruopdData){
+        let row = '"' + data.name + '","' + data.sampleSize + '",';
+
+        for(let i=0; i<MaxSampleSize; i++){
+            let sample = data.values[i];
+            if(!sample){
+                sample = '/';
+            }
+            row += '"' + sample + '",';
+        }
+
+        row += '"' + data.mean.toFixed(2) + '","' + data.sd.toFixed(2) + '"\r\n'
+
+        csvData += row;
+
+    }
+
+    let filename=document.getElementById('filenametf').value;
+    console.log(filename)
+    if(filename.length>0){
+        if(filename.slice(-4)!='.csv'){
+            filename += '.csv';
+        }
+    }else{
+        filename='OpenPullTestData.csv';
+    }
+
+    csvData = 'data:text/csv,' +csvData;
+    saveAs(csvData, filename);  //error when download 
+}
+
+function TTestGenerateCSV(){  //converts the grouped data to an scv table
+
+    let alpha = 0.05;
+    let csvData = '"sep=,"\r\n';
+    let header = '"Name","T-Wert","P-Wert","Alpha","Statistisch Signifikant"\r\n';
+
+    csvData += header;
+
+    for(let data of TTestResults){
+        let signifikant = data.results.pTwoSided<alpha?'Ja' : 'Nein' 
+        let row = '"' + data.name + '","' + data.results.tStatistic + '","' + data.results.pTwoSided + '","' + alpha + '","' + signifikant + '"\r\n';
+
+        csvData += row;
+
+    }
+    console.log(csvData);
+
+    let filename=document.getElementById('filenametf').value;
+    console.log(filename)
+    if(filename.length>0){
+        if(filename.slice(-4)!='.csv'){
+            filename += '.csv';
+        }
+    }else{
+        filename='OpenPullTTest.csv';
+    }
+
+    csvData = 'data:text/csv,' +csvData;
+    saveAs(csvData, filename);  //error when download 
+}
+
+function structureSampleData(gDO1, gDO2){
+    let data = [];
+
+    for(let i=0; i<gDO1.sampleSize; i++){
+        let dataObj = {
+            sample1: gDO1.values[i],
+            sample2: gDO2.values[i],
+        }
+        data.push(dataObj);
+    }
+
+    return data;
+
+
 }
