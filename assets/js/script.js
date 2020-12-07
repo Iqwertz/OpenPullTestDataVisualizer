@@ -921,6 +921,7 @@ function StandardDiviation(data){   //Calculate the Standard deviation of an arr
 }
 
 function saveAs(uri, filename) {
+    uri=fixUmlauts(uri);
     var link = document.createElement('a');
     if (typeof link.download === 'string') {
         link.href = uri;
@@ -1048,4 +1049,15 @@ function generateAsterixes(alpha, pValue){
         result="***"
     }
     return result;
+}
+
+function fixUmlauts(value) {
+    value = value.replace(/ä/g, 'ae');
+    value = value.replace(/ö/g, 'oe');
+    value = value.replace(/ü/g, 'ue');
+    value = value.replace(/ß/g, '&szlig;');
+    value = value.replace(/Ä/g, 'Ae');
+    value = value.replace(/Ö/g, 'Oe');
+    value = value.replace(/Ü/g, 'Ue');
+    return value;
 }
