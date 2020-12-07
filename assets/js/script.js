@@ -285,7 +285,7 @@ app.controller('Visualizer', function($scope) {
         for(let key in $scope.Data){  //Set all data to select all status
             $scope.Data[key].Selected=$scope.SelectAllBool;
         }
-        
+
         $scope.SetBreakpointData();
     }
 
@@ -991,13 +991,15 @@ function TTestGenerateCSV(){  //converts the grouped data to an scv table
 
     let alpha = 0.05;
     let csvData = '"sep=,"\r\n';
-    let header = '"Name","T-Wert","P-Wert","Alpha","Statistisch Signifikant"\r\n';
+    let header = '"Name","T-Wert","P-Wert","Alpha","Statistisch Signifikant","* Format"\r\n';
 
     csvData += header;
 
     for(let data of TTestResults){
         let signifikant = data.results.pTwoSided<alpha?'Ja' : 'Nein' 
-        let row = '"' + data.name + '","' + data.results.tStatistic + '","' + data.results.pTwoSided + '","' + alpha + '","' + signifikant + '"\r\n';
+        let asterix =  generateAsterixes(alpha, data.results.pTwoSided);
+        
+            let row = '"' + data.name + '","' + data.results.tStatistic + '","' + data.results.pTwoSided + '","' + alpha + '","' + signifikant + '","' + asterix +'"\r\n';
 
         csvData += row;
 
@@ -1032,4 +1034,18 @@ function structureSampleData(gDO1, gDO2){
     return data;
 
 
+}
+
+function generateAsterixes(alpha, pValue){
+    let result = "error";
+    if(pValue>alpha){
+        result="ns";
+    }else if(pValue>0.01){
+        result="*";
+    }else if(pValue>0.001){
+        result="**";
+    }else if(pValue>0){
+        result="***"
+    }
+    return result;
 }
