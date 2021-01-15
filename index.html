@@ -18,11 +18,61 @@
         <div ng-controller="Visualizer" id="Visualizer">
             <div class="SelectDataPreview" ng-show="ShowMode==0">
                 <div class="SelectDataPreviewOverlay">
-                    <div class="SelectContainer">
+                    <div class="SelectContainer" ng-if="!VWAData">
                         Select Test Data
                         <div>
-                            <button id="DataFileInputButton">
+                            <button ng-click="fileInputButtonClicked()">
                                 <i class="fas fa-plus"></i> Select Data
+                            </button>
+                        </div>
+                    </div>
+                    <div class="SelectContainer VWA" ng-if="VWAData">
+                        Wähle einen Parameter:
+                        <div>
+                            <button style="background-color: #ff0dbe; " ng-click="setVWAData('Alle','assets/VWA/Unsortiert/')">
+                                Alle Daten <i class="fas fa-arrow-right"></i>
+                            </button>
+                            <button style="background-color: #ff971e; " ng-click="setVWAData('Stehend','assets/VWA/Unsortiert/stehend/')">
+                                Stehend<i class="fas fa-arrow-right"></i>
+                            </button>
+                            <button  style="background-color: #00ffb1; "  ng-click="setVWAData('Liegend','assets/VWA/Unsortiert/liegend/')">
+                                Liegend<i class="fas fa-arrow-right"></i>
+                            </button>
+                            <button  style="background-color: #00ffb1; "   ng-click="setVWAData('Düsendurchmesserl','assets/VWA/Düsendurchmesser/liegend/')">
+                                Düsendurchmesser liegend<i class="fas fa-arrow-right"></i>
+                            </button>
+                            <button  style="background-color: #ff971e; "  ng-click="setVWAData('Düsendurchmessers','assets/VWA/Düsendurchmesser/stehend/')">
+                                Düsendurchmesser stehend<i class="fas fa-arrow-right"></i>
+                            </button>
+                            <button  style="background-color: #00ffb1; "   ng-click="setVWAData('Fülldichtel','assets/VWA/Infill/Dichte/liegend/')">
+                                Fülldichte liegend<i class="fas fa-arrow-right"></i>
+                            </button>
+                            <button style="background-color: #ff971e; "  ng-click="setVWAData('Fülldichtes','assets/VWA/Infill/Dichte/stehend/')">
+                                Fülldichte stehend<i class="fas fa-arrow-right"></i>
+                            </button>
+                            <button   style="background-color: #00ffb1; "  ng-click="setVWAData('Füllmusterl','assets/VWA/Infill/Muster/liegend/')">
+                                Füllmuster liegend<i class="fas fa-arrow-right"></i>
+                            </button>
+                            <button style="background-color: #ff971e; "  ng-click="setVWAData('Füllmusters','assets/VWA/Infill/Muster/stehend/')">
+                                Füllmuster stehend<i class="fas fa-arrow-right"></i>
+                            </button>
+                            <button  style="background-color: #00ffb1; "   ng-click="setVWAData('Schalendickel','assets/VWA/Schalendicke/liegend/')">
+                                Schalendicke liegend<i class="fas fa-arrow-right"></i>
+                            </button>
+                            <button  style="background-color: #ff971e; "  ng-click="setVWAData('Schalendickes','assets/VWA/Schalendicke/stehend/')">
+                                Schalendicke stehend<i class="fas fa-arrow-right"></i>
+                            </button>
+                            <button   style="background-color: #00ffb1; "  ng-click="setVWAData('Schichthöhel','assets/VWA/Schichthöhe/liegend/')">
+                                Schichthöhe liegend<i class="fas fa-arrow-right"></i>
+                            </button>
+                            <button style="background-color: #ff971e; "  ng-click="setVWAData('Schichthöhes','assets/VWA/Schichthöhe/stehend/')">
+                                Schichthöhe stehend<i class="fas fa-arrow-right"></i>
+                            </button>
+                            <button  style="background-color: #00ffb1; "   ng-click="setVWAData('Temperaturl','assets/VWA/Temperatur/liegend/')">
+                                Temperatur liegend<i class="fas fa-arrow-right"></i>
+                            </button>
+                            <button  style="background-color: #ff971e; " ng-click="setVWAData('Temperaturs','assets/VWA/Temperatur/stehend/')">
+                                Temperatur stehend<i class="fas fa-arrow-right"></i>
                             </button>
                         </div>
                     </div>
@@ -124,7 +174,7 @@
 
                 <div class="ChooseTestContainer">
                     <div class="SelcetAllButton">
-                    Select All <input type="checkbox" ng-model="SelectAllBool" ng-change="SelectAll()">
+                        Select All <input type="checkbox" ng-model="SelectAllBool" ng-change="SelectAll()">
                     </div>
                     <ul>
                         <!-- <li ng-repeat="data in Data">-->
@@ -187,6 +237,7 @@
                 </div>
             </div>
         </div>
+        <script src="assets/js/vwaData.js"></script>
         <script src="assets/js/script.js"></script>
     </body>
 </html>

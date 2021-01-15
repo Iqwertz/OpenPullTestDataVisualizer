@@ -1,0 +1,37 @@
+Name;Stichproben Anzahl;Wert1;Wert2;Wert3;Mittelwert;Standardabweichung
+Stehend Temperatur 190°;3;18;49;80;49;31
+Stehend Düsendurchmesser 0.2mm;3;63;50;58;57;6.56
+Stehend Fülldichte 0%;3;193;234;221;216;20.95
+Stehend Füllmuster Kubisch;3;327;368;317;337.33;27.02
+Stehend Füllmuster Gyroid;3;370;385;315;356.67;36.86
+Stehend Schichthöhe 0.3mm;3;420;317;344;360.33;53.41
+Stehend Füllmuster Konzentisch;3;438;403;253;364.67;98.28
+Stehend Füllmuster Geradlinig;3;500;449;403;450.67;48.52
+Stehend Füllmuster Dreiecke;3;468;400;492;453.33;47.72
+Liegend Düsendurchmesser 0.2mm;3;388;497;505;463.33;65.36
+Liegend Schalendicke 0.4mm;3;516;501;507;508;7.55
+Stehend Schalendicke 0.4mm;3;571;564;401;512;96.19
+Stehend Temperatur 240°;3;522;613;549;561.33;46.74
+Liegend Fülldichte 0%;3;644;562;631;612.33;44.07
+Stehend Düsendurchmesser 0.6mm;3;633;670;771;691.33;71.43
+Stehend Fülldichte 50%;3;824;772;637;744.33;96.52
+StandardStehend;3;818;710;838;788.67;68.86
+Stehend Schalendicke 1.2mm;3;785;767;830;794;32.45
+Liegend Füllmuster Gyroid;3;819;844;743;802;52.6
+Stehend Schichthöhe 0.1mm;3;833;897;700;810;100.49
+Liegend Füllmuster Konzentrisch;3;839;807;799;815;21.17
+Liegend Füllmuster Geradlinig;3;808;837;825;823.33;14.57
+Liegend Füllmuster Dreiecke;3;875;881;866;874;7.55
+StandardLiegend;3;884;907;867;886;20.07
+Liegend Schichthöhe 0.3mm;3;941;821;947;903;71.08
+Liegend Temperatur 240°;3;875;940;969;928;48.14
+Liegend Temperatur 190°;3;1042;835;959;945.33;104.17
+Stehend Fülldichte 75%;3;1106;1024;969;1033;68.94
+Liegend Schichthöhe 0.1mm;3;1109;1079;1053;1080.33;28.02
+Liegend Füllmuster Kubisch;3;1075;1112;1085;1090.67;19.14
+Liegend Fülldichte 50%;3;1169;1111;1032;1104;68.77
+Stehend Fülldichte 100%;3;1153;1136;1193;1160.67;29.26
+Liegend Schalendicke 1.2mm;3;1295;1256;1251;1267.33;24.09
+Liegend Düsendurchmesser 0.6mm;3;1255;1358;1331;1314.67;53.41
+Liegend Fülldichte 75%;3;1660;1616;1428;1568;123.22
+Liegend Fülldichte 100%;3;2198;2422;2015;2211.67;203.84
