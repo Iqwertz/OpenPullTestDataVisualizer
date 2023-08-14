@@ -3,10 +3,7 @@
   <head>
     <title>Ble Interface</title>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, user-scalable=no"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <link rel="stylesheet" href="assets/css/main.css" />
     <script src="assets/js/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.9/angular.min.js"></script>
@@ -15,11 +12,9 @@
     <script src="assets/js/chartjs-plugin-annotation.min.js"></script>
     <script src="assets/js/statistics.min.js"></script>
     <script src="assets/js/randomcolor.js"></script>
-    <script
-      src="https://kit.fontawesome.com/096ef5e38d.js"
-      crossorigin="anonymous"
-    ></script>
+    <script src="https://kit.fontawesome.com/096ef5e38d.js" crossorigin="anonymous"></script>
   </head>
+
   <body ng-app="app">
     <div ng-controller="Visualizer" id="Visualizer">
       <div class="SelectDataPreview" ng-show="ShowMode==0">
@@ -27,103 +22,98 @@
           <div class="SelectContainer" ng-if="!VWAData">
             Select Test Data
             <div>
-              <button ng-click="fileInputButtonClicked()">
-                <i class="fas fa-plus"></i> Select Data
-              </button>
+              <button ng-click="fileInputButtonClicked()"><i class="fas fa-plus"></i> Select Data</button>
+            </div>
+            <div class="loadVWAData">
+              <button ng-click="loadVWAData()">Load sample Data</button>
             </div>
           </div>
           <div class="SelectContainer VWA" ng-if="VWAData">
-            Wähle einen Parameter:
+            Choose a parameter:
             <div>
-              <button
-                style="background-color: #ff0dbe"
-                ng-click="setVWAData('Alle','assets/VWA/Unsortiert/')"
-              >
-                Alle Daten <i class="fas fa-arrow-right"></i>
+              <button style="background-color: #ff0dbe" ng-click="setVWAData('Alle','assets/VWA/Unsortiert/')">
+                All data <i class="fas fa-arrow-right"></i>
               </button>
               <button
                 style="background-color: #ff971e"
-                ng-click="setVWAData('Stehend','assets/VWA/Unsortiert/stehend/')"
+                ng-click="setVWAData('standing','assets/VWA/Unsortiert/standing/')"
               >
-                Stehend<i class="fas fa-arrow-right"></i>
+                Standing<i class="fas fa-arrow-right"></i>
+              </button>
+              <button style="background-color: #00ffb1" ng-click="setVWAData('lying','assets/VWA/Unsortiert/lying/')">
+                Lying<i class="fas fa-arrow-right"></i>
               </button>
               <button
                 style="background-color: #00ffb1"
-                ng-click="setVWAData('Liegend','assets/VWA/Unsortiert/liegend/')"
+                ng-click="setVWAData('Düsendurchmesserl','assets/VWA/Düsendurchmesser/lying/')"
               >
-                Liegend<i class="fas fa-arrow-right"></i>
-              </button>
-              <button
-                style="background-color: #00ffb1"
-                ng-click="setVWAData('Düsendurchmesserl','assets/VWA/Düsendurchmesser/liegend/')"
-              >
-                Düsendurchmesser liegend<i class="fas fa-arrow-right"></i>
+                Nozzlediameter lying<i class="fas fa-arrow-right"></i>
               </button>
               <button
                 style="background-color: #ff971e"
-                ng-click="setVWAData('Düsendurchmessers','assets/VWA/Düsendurchmesser/stehend/')"
+                ng-click="setVWAData('Düsendurchmessers','assets/VWA/Düsendurchmesser/standing/')"
               >
-                Düsendurchmesser stehend<i class="fas fa-arrow-right"></i>
+                Nozzlediameter standing<i class="fas fa-arrow-right"></i>
               </button>
               <button
                 style="background-color: #00ffb1"
-                ng-click="setVWAData('Fülldichtel','assets/VWA/Infill/Dichte/liegend/')"
+                ng-click="setVWAData('Fülldichtel','assets/VWA/Infill/Dichte/lying/')"
               >
-                Fülldichte liegend<i class="fas fa-arrow-right"></i>
+                Infill lying<i class="fas fa-arrow-right"></i>
               </button>
               <button
                 style="background-color: #ff971e"
-                ng-click="setVWAData('Fülldichtes','assets/VWA/Infill/Dichte/stehend/')"
+                ng-click="setVWAData('Fülldichtes','assets/VWA/Infill/Dichte/standing/')"
               >
-                Fülldichte stehend<i class="fas fa-arrow-right"></i>
+                Infill standing<i class="fas fa-arrow-right"></i>
               </button>
               <button
                 style="background-color: #00ffb1"
-                ng-click="setVWAData('Füllmusterl','assets/VWA/Infill/Muster/liegend/')"
+                ng-click="setVWAData('Füllmusterl','assets/VWA/Infill/Muster/lying/')"
               >
-                Füllmuster liegend<i class="fas fa-arrow-right"></i>
+                Infill pattern lying<i class="fas fa-arrow-right"></i>
               </button>
               <button
                 style="background-color: #ff971e"
-                ng-click="setVWAData('Füllmusters','assets/VWA/Infill/Muster/stehend/')"
+                ng-click="setVWAData('Füllmusters','assets/VWA/Infill/Muster/standing/')"
               >
-                Füllmuster stehend<i class="fas fa-arrow-right"></i>
+                Infill pattern standing<i class="fas fa-arrow-right"></i>
               </button>
               <button
                 style="background-color: #00ffb1"
-                ng-click="setVWAData('Schalendickel','assets/VWA/Schalendicke/liegend/')"
+                ng-click="setVWAData('Schalendickel','assets/VWA/Schalendicke/lying/')"
               >
-                Schalendicke liegend<i class="fas fa-arrow-right"></i>
+                Perimeter lying<i class="fas fa-arrow-right"></i>
               </button>
               <button
                 style="background-color: #ff971e"
-                ng-click="setVWAData('Schalendickes','assets/VWA/Schalendicke/stehend/')"
+                ng-click="setVWAData('Schalendickes','assets/VWA/Schalendicke/standing/')"
               >
-                Schalendicke stehend<i class="fas fa-arrow-right"></i>
+                Perimeter standing<i class="fas fa-arrow-right"></i>
               </button>
               <button
                 style="background-color: #00ffb1"
-                ng-click="setVWAData('Schichthöhel','assets/VWA/Schichthöhe/liegend/')"
+                ng-click="setVWAData('Schichthöhel','assets/VWA/Schichthöhe/lying/')"
               >
-                Schichthöhe liegend<i class="fas fa-arrow-right"></i>
+                Layerheight lying<i class="fas fa-arrow-right"></i>
               </button>
               <button
                 style="background-color: #ff971e"
-                ng-click="setVWAData('Schichthöhes','assets/VWA/Schichthöhe/stehend/')"
+                ng-click="setVWAData('Schichthöhes','assets/VWA/Schichthöhe/standing/')"
               >
-                Schichthöhe stehend<i class="fas fa-arrow-right"></i>
+                Layerheight standing<i class="fas fa-arrow-right"></i>
               </button>
               <button
                 style="background-color: #00ffb1"
-                ng-click="setVWAData('Temperaturl','assets/VWA/Temperatur/liegend/')"
+                ng-click="setVWAData('Temperaturl','assets/VWA/Temperatur/lying/')"
               >
-                Temperatur liegend<i class="fas fa-arrow-right"></i>
+                Temperature lying<i class="fas fa-arrow-right"></i>
               </button>
               <button
                 style="background-color: #ff971e"
-                ng-click="setVWAData('Temperaturs','assets/VWA/Temperatur/stehend/')"
+                ng-click="setVWAData('Temperaturs','assets/VWA/Temperatur/standing/')"
               >
-                Temperatur stehend<i class="fas fa-arrow-right"></i>
+                Temperature standing<i class="fas fa-arrow-right"></i>
               </button>
             </div>
           </div>
@@ -134,15 +124,9 @@
           <div class="SelectContainer">
             Select Test Mode
             <div>
-              <button id="TestData">
-                <i class="fas fa-plus"></i> View Testdata
-              </button>
-              <button id="CompareData">
-                <i class="fas fa-plus"></i> Compare Testdata
-              </button>
-              <button id="StandardDiviation">
-                <i class="fas fa-plus"></i> Statistical Analysis
-              </button>
+              <button id="TestData"><i class="fas fa-plus"></i> View Testdata</button>
+              <button id="CompareData"><i class="fas fa-plus"></i> Compare Testdata</button>
+              <button id="StandardDiviation"><i class="fas fa-plus"></i> Statistical Analysis</button>
             </div>
           </div>
         </div>
@@ -165,10 +149,7 @@
             <h1>Select Test</h1>
             <ul>
               <li ng-repeat="data in Data">
-                <div
-                  ng-click="SetFile(data.MetaData.FileName)"
-                  class="TestItem"
-                >
+                <div ng-click="SetFile(data.MetaData.FileName)" class="TestItem">
                   {{data.MetaData.FileName}} : {{data.MetaData.Name}}
                 </div>
               </li>
@@ -196,9 +177,7 @@
 
               <ul>
                 <li ng-repeat="data in DisplayParameter">
-                  <div class="TestItem Parameter">
-                    {{data[0]}} : {{data[1]}}
-                  </div>
+                  <div class="TestItem Parameter">{{data[0]}} : {{data[1]}}</div>
                 </li>
               </ul>
             </ul>
@@ -218,21 +197,13 @@
         <div class="ChooseTestContainer">
           <div class="SelcetAllButton">
             Select All
-            <input
-              type="checkbox"
-              ng-model="SelectAllBool"
-              ng-change="SelectAll()"
-            />
+            <input type="checkbox" ng-model="SelectAllBool" ng-change="SelectAll()" />
           </div>
           <ul>
             <!-- <li ng-repeat="data in Data">-->
             <li ng-repeat="data in Data">
               <div class="TestItem">
-                <input
-                  type="checkbox"
-                  ng-model="data.Selected"
-                  ng-change="SetBreakpointData()"
-                />
+                <input type="checkbox" ng-model="data.Selected" ng-change="SetBreakpointData()" />
                 {{data.MetaData.Name}}
               </div>
             </li>
@@ -256,19 +227,10 @@
         <div class="Chart" id="ErrorChartCon">
           <canvas id="ErrorChartId"></canvas>
 
-          <input
-            class="fileNameTextfield"
-            id="filenametf"
-            type="text"
-            placeholder="FileName"
-          />
+          <input class="fileNameTextfield" id="filenametf" type="text" placeholder="FileName" />
           <div class="Downloads">
-            <button class="Image" id="takeScreenshot">
-              Download Graph <i class="fas fa-arrow-circle-down"></i>
-            </button>
-            <button class="CSV" id="DownloadCSV">
-              Download CSV<i class="fas fa-arrow-circle-down"></i>
-            </button>
+            <button class="Image" id="takeScreenshot">Download Graph <i class="fas fa-arrow-circle-down"></i></button>
+            <button class="CSV" id="DownloadCSV">Download CSV<i class="fas fa-arrow-circle-down"></i></button>
           </div>
         </div>
 
@@ -277,12 +239,7 @@
           <h3>Select Default Value:</h3>
           <div class="selectcon">
             <select ng-model="tTestSelect.selectedOption">
-              <option
-                ng-repeat="option in tTestSelect.availableOptions"
-                value="{{option.id}}"
-              >
-                {{option.name}}
-              </option>
+              <option ng-repeat="option in tTestSelect.availableOptions" value="{{option.id}}">{{option.name}}</option>
             </select>
 
             <button class="calculate" id="calculateTTest">Calculate</button>
@@ -295,9 +252,7 @@
               <button class="Image" id="TTestTakeScreenshot">
                 Download Graph <i class="fas fa-arrow-circle-down"></i>
               </button>
-              <button class="CSV" id="TTtestDownloadCSV">
-                Download CSV<i class="fas fa-arrow-circle-down"></i>
-              </button>
+              <button class="CSV" id="TTtestDownloadCSV">Download CSV<i class="fas fa-arrow-circle-down"></i></button>
             </div>
           </div>
         </div>

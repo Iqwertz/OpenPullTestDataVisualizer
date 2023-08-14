@@ -9,57 +9,57 @@ var fileInput = element.firstChild;
 /////
 
 
-var JsonData = [];  //Array which contains The files in form of a Json obj
-var GruopdData = []; 
+var JsonData = []; //Array which contains The files in form of a Json obj
+var GruopdData = [];
 let TTestResults = [];
 
 var Mode = 0; //Mode 0 = View TestData / 1 = View Breakpoints /2 = Standard Diviation
 
 fileInput.addEventListener('change', function() {
-    var files = fileInput.files;                //get files
-    var ErrorFiles = [];                        //Array of broken file names
-    for (var i = 0; i < files.length; i++) {         //loop through files
+    var files = fileInput.files; //get files
+    var ErrorFiles = []; //Array of broken file names
+    for (var i = 0; i < files.length; i++) { //loop through files
         (function(file) {
-            var name = file.name;                    //get file name
-            var reader = new FileReader();           //create File reader from the file Api
-            if(i==files.length-1){                   //Check if it is last file
-                reader.onload = function(e) {  
-                    try{                             //try creating JSON
-                        var text = e.target.result;  //get data
+            var name = file.name; //get file name
+            var reader = new FileReader(); //create File reader from the file Api
+            if (i == files.length - 1) { //Check if it is last file
+                reader.onload = function(e) {
+                    try { //try creating JSON
+                        var text = e.target.result; //get data
                         var json = JSON.parse(text); //convert data to Json 
 
-                        json.MetaData.FileName = name;//add File Name to Json obj
-                        JsonData.push(json);          //add Data to Json Array
+                        json.MetaData.FileName = name; //add File Name to Json obj
+                        JsonData.push(json); //add Data to Json Array
 
-                    }catch(error){
+                    } catch (error) {
                         console.log(error);
-                        ErrorFiles.push(name);        //If file ist broken push its name to the Error Array
+                        ErrorFiles.push(name); //If file ist broken push its name to the Error Array
                     }
 
-                    if(ErrorFiles.length!=0){  //If there are broken files alert them to the user
-                        alert("Attention this Files are Broken: "+ErrorFiles.toString());
+                    if (ErrorFiles.length != 0) { //If there are broken files alert them to the user
+                        alert("Attention this Files are Broken: " + ErrorFiles.toString());
                     }
 
-                    if(JsonData.length!=0){ //if there is Valid Data go to select mode screen
+                    if (JsonData.length != 0) { //if there is Valid Data go to select mode screen
                         var scope = angular.element(document.getElementById("Visualizer")).scope();
-                        scope.$apply(function(){
-                            scope.ShowMode=1;
+                        scope.$apply(function() {
+                            scope.ShowMode = 1;
                         });
                     }
 
                 }
-            }else{
-                reader.onload = function(e) { 
+            } else {
+                reader.onload = function(e) {
 
-                    try{                             //try creating JSON
-                        var text = e.target.result;  //get data
+                    try { //try creating JSON
+                        var text = e.target.result; //get data
                         var json = JSON.parse(text); //convert data to Json 
 
-                        json.MetaData.FileName = name;//add File Name to Json obj
-                        JsonData.push(json);          //add Data to Json Array
-                    }catch(error){
+                        json.MetaData.FileName = name; //add File Name to Json obj
+                        JsonData.push(json); //add Data to Json Array
+                    } catch (error) {
                         console.log(error);
-                        ErrorFiles.push(name);        //If file ist broken push its name to the Error Array
+                        ErrorFiles.push(name); //If file ist broken push its name to the Error Array
                     }
 
                 }
@@ -69,14 +69,14 @@ fileInput.addEventListener('change', function() {
     }
     console.log(JsonData);
     /*
-    */
+     */
 });
 
 //Called on Init
 window.onload = function() {
-    if(getUrlVars()["data"]=='VWA'){
+    if (getUrlVars()["data"] == 'VWA') {
         var scope = angular.element(document.getElementById("Visualizer")).scope();
-        scope.$apply(function(){
+        scope.$apply(function() {
             scope.VWAData = true;
         });
     }
@@ -84,7 +84,7 @@ window.onload = function() {
 //get url params
 function getUrlVars() {
     var vars = {};
-    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m, key, value) {
         vars[key] = value;
     });
     return vars;
@@ -92,43 +92,43 @@ function getUrlVars() {
 
 //When Mode Button clicked select Mode
 document.getElementById("TestData").addEventListener('click', function() {
-    Mode=0; 
+    Mode = 0;
     var scope = angular.element(document.getElementById("Visualizer")).scope();
-    scope.$apply(function(){
-        scope.SetShowData(Mode+2);
+    scope.$apply(function() {
+        scope.SetShowData(Mode + 2);
     });
 });
 
 document.getElementById("CompareData").addEventListener('click', function() {
-    Mode=1;
+    Mode = 1;
     var scope = angular.element(document.getElementById("Visualizer")).scope();
-    scope.$apply(function(){
-        scope.SetShowData(Mode+2);
+    scope.$apply(function() {
+        scope.SetShowData(Mode + 2);
     });
 });
 
 
 document.getElementById("StandardDiviation").addEventListener('click', function() {
-    Mode=2;
+    Mode = 2;
     var scope = angular.element(document.getElementById("Visualizer")).scope();
-    scope.$apply(function(){
-        scope.SetShowData(Mode+2);
+    scope.$apply(function() {
+        scope.SetShowData(Mode + 2);
     });
 });
 
 
 document.getElementById("takeScreenshot").addEventListener('click', function() {
     console.log("Screenshot");
-    let filename=document.getElementById('filenametf').value;
+    let filename = document.getElementById('filenametf').value;
     console.log(filename)
-    if(filename.length>0){
-        if(filename.slice(-4)!='.png'){
+    if (filename.length > 0) {
+        if (filename.slice(-4) != '.png') {
             filename += '.png';
         }
-    }else{
-        filename='OpenPullTestData.png';
+    } else {
+        filename = 'OpenPullTestData.png';
     }
-    html2canvas(document.querySelector("#ErrorChartId"),{scrollX: 0,scrollY: -window.scrollY}).then(canvas => {
+    html2canvas(document.querySelector("#ErrorChartId"), { scrollX: 0, scrollY: -window.scrollY }).then(canvas => {
         saveAs(canvas.toDataURL(), filename);
     });
 });
@@ -139,16 +139,16 @@ document.getElementById("DownloadCSV").addEventListener('click', function() {
 
 document.getElementById("TTestTakeScreenshot").addEventListener('click', function() {
     console.log("Screenshot");
-    let filename=document.getElementById('filenametf').value;
+    let filename = document.getElementById('filenametf').value;
     console.log(filename)
-    if(filename.length>0){
-        if(filename.slice(-4)!='.png'){
+    if (filename.length > 0) {
+        if (filename.slice(-4) != '.png') {
             filename += '.png';
         }
-    }else{
-        filename='OpenPullTTest.png';
+    } else {
+        filename = 'OpenPullTTest.png';
     }
-    html2canvas(document.querySelector("#TTestResultChartId"),{scrollX: 0,scrollY: -window.scrollY}).then(canvas => {
+    html2canvas(document.querySelector("#TTestResultChartId"), { scrollX: 0, scrollY: -window.scrollY }).then(canvas => {
         saveAs(canvas.toDataURL(), filename);
     });
 });
@@ -159,7 +159,7 @@ document.getElementById("TTtestDownloadCSV").addEventListener('click', function(
 
 document.getElementById("calculateTTest").addEventListener('click', function() {
     var scope = angular.element(document.getElementById("Visualizer")).scope();
-    scope.$apply(function(){
+    scope.$apply(function() {
         scope.CalculateTTest();
     });
 
@@ -171,123 +171,126 @@ const urlParams = new URLSearchParams(window.location.search);
 var app = angular.module("app", []);
 
 app.controller('Visualizer', function($scope) {
-    $scope.ShowMode=0; // 0 = SelectDataScreen / 1=SelectModeScreen / 2 = View TestData / 3 = Breakpoints
+    $scope.ShowMode = 0; // 0 = SelectDataScreen / 1=SelectModeScreen / 2 = View TestData / 3 = Breakpoints
     $scope.VWAData = false;
-    $scope.Data=[];   //Data Array Containing Json Data
-    $scope.CurrentTestData = {};   //Obj containig the selected Test Data
-    $scope.DisplayMetaData =[];       //Array Containig the MetaData of the Selected Test (Used for ng-repeat)  // Data: [Name, Data]
-    $scope.DisplayParameter =[];  //Array Containig the Parameter of the Selected Test (Used for ng-repeat) // Data: [Name, Data]
-    $scope.DisplayBreakpoint = 0;  //Breakpoint of the selected Test
+    $scope.Data = []; //Data Array Containing Json Data
+    $scope.CurrentTestData = {}; //Obj containig the selected Test Data
+    $scope.DisplayMetaData = []; //Array Containig the MetaData of the Selected Test (Used for ng-repeat)  // Data: [Name, Data]
+    $scope.DisplayParameter = []; //Array Containig the Parameter of the Selected Test (Used for ng-repeat) // Data: [Name, Data]
+    $scope.DisplayBreakpoint = 0; //Breakpoint of the selected Test
     $scope.DisplayMaximum = 0; //Maximum of the selected Test
     $scope.SelectAllBool = true; //Var holding the status of the select all button
 
-    $scope.tTestSelect = {  //scope vars of the ttest select
-        availableOptions: [
-        ],
+    $scope.tTestSelect = { //scope vars of the ttest select
+        availableOptions: [],
         selectedOption: {} //This sets the default value of the select in the ui
     };
 
-    $scope.fileInputButtonClicked = function(){
+    $scope.fileInputButtonClicked = function() {
         fileInput.click();
     }
 
     $scope.isLocalStorageData = urlParams.get("localData");
-    if($scope.isLocalStorageData=="true"){  //when there is available localstorage data
-        console.log(JSON.parse(localStorage.getItem("openPullTestData"))); 
+    if ($scope.isLocalStorageData == "true") { //when there is available localstorage data
+        console.log(JSON.parse(localStorage.getItem("openPullTestData")));
         var json = JSON.parse(localStorage.getItem("openPullTestData")) //convert data to Json 
 
-        json.MetaData.FileName = json.MetaData.Name;//add File Name to Json obj
-        JsonData.push(json);          //add Data to Json Array
-        $scope.ShowMode=1;   //change ShowMode
+        json.MetaData.FileName = json.MetaData.Name; //add File Name to Json obj
+        JsonData.push(json); //add Data to Json Array
+        $scope.ShowMode = 1; //change ShowMode
     }
 
-    $scope.SetShowData = function(mode) {  //Called when Files are loaded
-        $scope.ShowMode=mode;   //Set the mode
-        $scope.Data=JsonData;    //set the data
+    $scope.SetShowData = function(mode) { //Called when Files are loaded
+        $scope.ShowMode = mode; //Set the mode
+        $scope.Data = JsonData; //set the data
         console.log($scope.Data);
-        for(let key in $scope.Data){  //Add Selected par. to data array (for data seletion in Mode Compare Test Data)
-            $scope.Data[key].Selected=true;
+        for (let key in $scope.Data) { //Add Selected par. to data array (for data seletion in Mode Compare Test Data)
+            $scope.Data[key].Selected = true;
         }
         console.log($scope.Data);
-        if($scope.ShowMode==3){   //If Breakpoint analyses
-            $scope.SetBreakpointData();     //Draw Bar Graph
+        if ($scope.ShowMode == 3) { //If Breakpoint analyses
+            $scope.SetBreakpointData(); //Draw Bar Graph
         }
-        if($scope.ShowMode==4){
+        if ($scope.ShowMode == 4) {
             $scope.calculateData();
         }
     }
 
-    $scope.setVWAData = function(type,path){
+    $scope.loadVWAData = function() {
+        $scope.VWAData = true;
+    }
+
+    $scope.setVWAData = function(type, path) {
         JsonData = [];
         let fileNames = dataLinksMap.get(type);
-        for (let name of fileNames){
+        for (let name of fileNames) {
             console.log(name);
-            fetch(path+name).then(response => {
+            fetch(path + name).then(response => {
                 return response.json();
             }).then(data => {
-                data.MetaData.FileName=name;
-                JsonData.push(data); 
+                data.MetaData.FileName = name;
+                JsonData.push(data);
                 var scope = angular.element(document.getElementById("Visualizer")).scope();
-                scope.$apply(function(){
-                    scope.ShowMode=1;
+                scope.$apply(function() {
+                    scope.ShowMode = 1;
                 });
             });
         }
     }
 
-    $scope.BackToSelectMode = function(){   //Reset Mode when Back to menu arrow is clicked
+    $scope.BackToSelectMode = function() { //Reset Mode when Back to menu arrow is clicked
         $scope.BackToMenu();
-        $scope.ShowMode=1;
+        $scope.ShowMode = 1;
     }
 
-    $scope.BackToSelectData = function(){   //Reset Data when Back arrow is clicked
+    $scope.BackToSelectData = function() { //Reset Data when Back arrow is clicked
         $scope.BackToMenu();
-        $scope.ShowMode=0;
-        $scope.Data=[];
-        JsonData=[];
-        fileInput.value=[];
+        $scope.ShowMode = 0;
+        $scope.Data = [];
+        JsonData = [];
+        fileInput.value = [];
     }
 
-    $scope.BackToMenu = function(){    //Reset Graph  and selected Test //Back to Select Data Menu (only in ShowMode = 2)
+    $scope.BackToMenu = function() { //Reset Graph  and selected Test //Back to Select Data Menu (only in ShowMode = 2)
 
-        angular.element( document.querySelector( '.SelectTest' ) ).removeClass('SelectTestMove');
+        angular.element(document.querySelector('.SelectTest')).removeClass('SelectTestMove');
 
         var element = angular.element(document.querySelector('.SelectTest'));
         var height = element[0].offsetHeight;
-        document.querySelector( '.MetaData' ).style.transform = "translate(130%, -"+height+"px)";
+        document.querySelector('.MetaData').style.transform = "translate(130%, -" + height + "px)";
 
         ClearData();
         $scope.CurrentTestData = {};
-        $scope.DisplayMetaData =[];
-        $scope.DisplayParameter =[];
+        $scope.DisplayMetaData = [];
+        $scope.DisplayParameter = [];
         $scope.DisplayBreakpoint = 0;
         $scope.DisplayMaximum = 0;
     }
 
-    $scope.SetFile = function(FN){   //Called When Test is selected // FN = FileName
+    $scope.SetFile = function(FN) { //Called When Test is selected // FN = FileName
 
-        var JsonIndex=0;
-        for(var i=0; i<$scope.Data.length; i++){   //Search for the Index of the file in the Json Array
-            if($scope.Data[i].MetaData.FileName==FN){
-                JsonIndex=i;
+        var JsonIndex = 0;
+        for (var i = 0; i < $scope.Data.length; i++) { //Search for the Index of the file in the Json Array
+            if ($scope.Data[i].MetaData.FileName == FN) {
+                JsonIndex = i;
                 break;
             }
         }
 
-        $scope.CurrentTestData=$scope.Data[JsonIndex];  //Set Current Test Data
-        $scope.DisplayBreakpoint = $scope.CurrentTestData.BreakPoint;   //Set Breakpoint
-        $scope.DisplayMaximum = $scope.CurrentTestData.Maximum;   //Set Maximum
+        $scope.CurrentTestData = $scope.Data[JsonIndex]; //Set Current Test Data
+        $scope.DisplayBreakpoint = $scope.CurrentTestData.BreakPoint; //Set Breakpoint
+        $scope.DisplayMaximum = $scope.CurrentTestData.Maximum; //Set Maximum
 
-        var TestDataNames;   //Get Names of JSON Metadata Properties in Array
-        var TestDataValues;  //Get Data of Json Metadata Properties in Array
+        var TestDataNames; //Get Names of JSON Metadata Properties in Array
+        var TestDataValues; //Get Data of Json Metadata Properties in Array
 
-        TestDataNames=Object.getOwnPropertyNames($scope.CurrentTestData.MetaData);
-        TestDataValues=Object.values($scope.CurrentTestData.MetaData);
+        TestDataNames = Object.getOwnPropertyNames($scope.CurrentTestData.MetaData);
+        TestDataValues = Object.values($scope.CurrentTestData.MetaData);
 
 
         //Set Data Values
-        for(var i=0; i<TestDataNames.length; i++){ //Set MetaData vor every Property except "Parameter"
-            if(TestDataNames[i]!="Parameter"){
+        for (var i = 0; i < TestDataNames.length; i++) { //Set MetaData vor every Property except "Parameter"
+            if (TestDataNames[i] != "Parameter") {
                 $scope.DisplayMetaData.push([TestDataNames[i], TestDataValues[i]]);
             }
         }
@@ -296,11 +299,11 @@ app.controller('Visualizer', function($scope) {
         var TestDataParameterNames; //Get Names of JSON Metadata Parameter Properties in Array
         var TestDataParameterValues; //Get Data of JSON Metadata Parameter Properties in Array
 
-        TestDataParameterNames=Object.getOwnPropertyNames($scope.CurrentTestData.MetaData.Parameter);
-        TestDataParameterValues=Object.values($scope.CurrentTestData.MetaData.Parameter);
+        TestDataParameterNames = Object.getOwnPropertyNames($scope.CurrentTestData.MetaData.Parameter);
+        TestDataParameterValues = Object.values($scope.CurrentTestData.MetaData.Parameter);
 
 
-        for(var i=0; i<TestDataParameterNames.length; i++){   //Set Parameter vor every Property
+        for (var i = 0; i < TestDataParameterNames.length; i++) { //Set Parameter vor every Property
             $scope.DisplayParameter.push([TestDataParameterNames[i], TestDataParameterValues[i]]);
 
         }
@@ -309,18 +312,18 @@ app.controller('Visualizer', function($scope) {
 
 
         ///////Set swipe animation
-        angular.element( document.querySelector( '.SelectTest' ) ).addClass('SelectTestMove');
+        angular.element(document.querySelector('.SelectTest')).addClass('SelectTestMove');
 
         var element = angular.element(document.querySelector('.SelectTest'));
         var height = element[0].offsetHeight;
-        document.querySelector( '.MetaData' ).style.transform = "translate(0px, -"+height+"px)";
+        document.querySelector('.MetaData').style.transform = "translate(0px, -" + height + "px)";
 
         SetData($scope.CurrentTestData.Data); //Set Line Chart Data
     }
 
     $scope.SelectAll = function() {
-        for(let key in $scope.Data){  //Set all data to select all status
-            $scope.Data[key].Selected=$scope.SelectAllBool;
+        for (let key in $scope.Data) { //Set all data to select all status
+            $scope.Data[key].Selected = $scope.SelectAllBool;
         }
 
         $scope.SetBreakpointData();
@@ -333,135 +336,131 @@ app.controller('Visualizer', function($scope) {
         console.log("Breakpoint Set");
     }
 
-    $scope.calculateData = function(){
+    $scope.calculateData = function() {
         ClearData();
 
-        let gruopedIndexes = new Map();  //get all the filenames with index and group them,
-        for(let i=0; i<$scope.Data.length; i++){
+        let gruopedIndexes = new Map(); //get all the filenames with index and group them,
+        for (let i = 0; i < $scope.Data.length; i++) {
             let fname = $scope.Data[i].MetaData.FileName;
             fname.replace('(', '');
             fname.replace(')', '');
             fname = (fname.split('.').slice(0, -1)).join('.');
-            fname = fname.slice(0, -1); 
+            fname = fname.slice(0, -1);
 
-            if(gruopedIndexes.has(fname)){
+            if (gruopedIndexes.has(fname)) {
                 let gruopIndexes = gruopedIndexes.get(fname);
                 gruopIndexes.push(i);
                 gruopedIndexes.set(fname, gruopIndexes);
-            }else{
-                gruopedIndexes.set(fname,[i]);
+            } else {
+                gruopedIndexes.set(fname, [i]);
             }
         }
 
         //Sort gruoped indexes by Mean
-        gruopedIndexes = new Map([...gruopedIndexes.entries()].sort((a,b) => {
+        gruopedIndexes = new Map([...gruopedIndexes.entries()].sort((a, b) => {
             let breakpointsA = [];
             let breakpointsB = [];
 
             let Avalue = a[1];
             let Bvalue = b[1];
 
-            for(let i=0; i<Avalue.length; i++){
+            for (let i = 0; i < Avalue.length; i++) {
                 breakpointsA.push($scope.Data[Avalue[i]].BreakPoint);
             }
-            for(let i=0; i<Bvalue.length; i++){
+            for (let i = 0; i < Bvalue.length; i++) {
                 breakpointsB.push($scope.Data[Bvalue[i]].BreakPoint);
             }
 
             let meanA = Mean(breakpointsA);
             let meanB = Mean(breakpointsB);
 
-            return meanA-meanB;
+            return meanA - meanB;
         }));
 
-        let ErrorChartData = { 
+        let ErrorChartData = {
             labels: [],
-            datasets: [
-                {
-                    label: 'Zugfestigkeit',
-                    data: [
-                    ]
-                }
-            ]
+            datasets: [{
+                label: 'Zugfestigkeit',
+                data: []
+            }]
         };
         ///Calculate Mean and SD for each gruop and add it to the Data object
         gruopedIndexes.forEach((value, key) => {
 
-            let gruopedDataObject = {
-                name: key,
-                sampleSize: -1,
-                values: [],
-                mean: -1,
-                sd: -1,
-            }
+                let gruopedDataObject = {
+                    name: key,
+                    sampleSize: -1,
+                    values: [],
+                    mean: -1,
+                    sd: -1,
+                }
 
-            let breakpoints = [];
-            for(let i=0; i<value.length; i++){
-                breakpoints.push($scope.Data[value[i]].BreakPoint)
-            }
+                let breakpoints = [];
+                for (let i = 0; i < value.length; i++) {
+                    breakpoints.push($scope.Data[value[i]].BreakPoint)
+                }
 
-            let mean = Mean(breakpoints);
-            let sd = StandardDiviation(breakpoints);
+                let mean = Mean(breakpoints);
+                let sd = StandardDiviation(breakpoints);
 
-            ErrorChartData.labels.push(key);
+                ErrorChartData.labels.push(key);
 
-            dataObject = {
-                y: mean,
-                yMin: mean-sd<0?0:mean-sd,
-                yMax: mean+sd
-            }
+                dataObject = {
+                    y: mean,
+                    yMin: mean - sd < 0 ? 0 : mean - sd,
+                    yMax: mean + sd
+                }
 
-            gruopedDataObject.sampleSize = breakpoints.length;
-            gruopedDataObject.values = breakpoints;
-            gruopedDataObject.mean = mean;
-            gruopedDataObject.sd = sd;
+                gruopedDataObject.sampleSize = breakpoints.length;
+                gruopedDataObject.values = breakpoints;
+                gruopedDataObject.mean = mean;
+                gruopedDataObject.sd = sd;
 
-            GruopdData.push(gruopedDataObject);
+                GruopdData.push(gruopedDataObject);
 
-            ErrorChartData.datasets[0].data.push(dataObject);
-        })
-        //console.log(ErrorChart);
+                ErrorChartData.datasets[0].data.push(dataObject);
+            })
+            //console.log(ErrorChart);
         ErrorChartData.datasets[0].data.sort(
-            (a,b) => {
-                return a.y-b.y;
+            (a, b) => {
+                return a.y - b.y;
             }
         );
 
         $scope.setTTestSelect();
 
-        SetErroChart(ErrorChartData);  //Set the generated Data
+        SetErroChart(ErrorChartData); //Set the generated Data
     }
 
-    $scope.setTTestSelect = function(){
-        $scope.tTestSelect = {  //scope vars of the ttest select
-            availableOptions: [
-            ],
+    $scope.setTTestSelect = function() {
+        $scope.tTestSelect = { //scope vars of the ttest select
+            availableOptions: [],
             selectedOption: {} //This sets the default value of the select in the ui
         };
 
-        for(let i=0; i<GruopdData.length; i++){
+        for (let i = 0; i < GruopdData.length; i++) {
             let obj = {
                 id: i,
                 name: GruopdData[i].name,
-            } 
+            }
             $scope.tTestSelect.availableOptions.push(obj);
         }
     }
 
-    $scope.CalculateTTest = function(){
-        TTestChart.data.labels=[];
-        TTestChart.data.datasets[0].data=[];
+    $scope.CalculateTTest = function() {
+        TTestChart.data.labels = [];
+        TTestChart.data.datasets[0].data = [];
         TTestChart.update();
 
         TTestResults = [];
 
-        let standardSampleId=$scope.tTestSelect.selectedOption;
+        let standardSampleId = $scope.tTestSelect.selectedOption;
         console.log(standardSampleId);
-        if(!isNaN(standardSampleId)){
-            for(let i=0; i<GruopdData.length; i++){
-                if(i!=standardSampleId){
+        if (!isNaN(standardSampleId)) {
+            for (let i = 0; i < GruopdData.length; i++) {
+                if (i != standardSampleId) {
                     let testData = structureSampleData(GruopdData[standardSampleId], GruopdData[i]);
-                    let testVars = { sample1: 'metric', sample2: 'metric'  };
+                    let testVars = { sample1: 'metric', sample2: 'metric' };
                     let stats = new Statistics(testData, testVars);
                     var treatmentSuccess = stats.studentsTTestTwoSamples('sample1', 'sample2');
                     let result = {
@@ -472,11 +471,11 @@ app.controller('Visualizer', function($scope) {
                 }
             }
 
-            TTestResults.sort((a,b) => {
-                return b.results.pTwoSided-a.results.pTwoSided;
+            TTestResults.sort((a, b) => {
+                return b.results.pTwoSided - a.results.pTwoSided;
             })
 
-            for(let data of TTestResults){
+            for (let data of TTestResults) {
                 TTestChart.data.labels.push(data.name);
                 TTestChart.data.datasets[0].data.push(data.results.pTwoSided);
             }
@@ -487,16 +486,16 @@ app.controller('Visualizer', function($scope) {
 
 });
 
-var DefaultStepSize=1;   //Step Siz eof Displayed Data (y-Axis)
+var DefaultStepSize = 1; //Step Siz eof Displayed Data (y-Axis)
 
-var ctx1 = document.getElementById('LiveChartId');  //Get chart context 
+var ctx1 = document.getElementById('LiveChartId'); //Get chart context 
 
 //Set Width and Height of the chart to fit container
-ctx1.height=innerDimensions('ChartCon').height;   
-ctx1.width=innerDimensions('ChartCon').width;
+ctx1.height = innerDimensions('ChartCon').height;
+ctx1.width = innerDimensions('ChartCon').width;
 
-var LiveChart = new Chart(ctx1, {  //create Chart.js Chart and Set options for the Line Chart
-    type: 'line',                   
+var LiveChart = new Chart(ctx1, { //create Chart.js Chart and Set options for the Line Chart
+    type: 'line',
     data: {
         labels: ['0'],
         datasets: [{
@@ -509,7 +508,7 @@ var LiveChart = new Chart(ctx1, {  //create Chart.js Chart and Set options for t
             pointRadius: 0,
             fill: false,
         }]
-    }, 
+    },
     options: {
         responsive: true,
         tooltips: {
@@ -517,7 +516,7 @@ var LiveChart = new Chart(ctx1, {  //create Chart.js Chart and Set options for t
             //intersect: false,
         },
         hover: {
-            mode: 'nearest', 
+            mode: 'nearest',
             intersect: true
         },
         scales: {
@@ -544,18 +543,17 @@ var LiveChart = new Chart(ctx1, {  //create Chart.js Chart and Set options for t
     }
 });
 
-var ctx2 = document.getElementById('BreakpointChartId');  //Get Chart Index
+var ctx2 = document.getElementById('BreakpointChartId'); //Get Chart Index
 
 //Set Width and Height of the chart to fit container
-ctx2.height=innerDimensions('BarChartCon').height;
-ctx2.width=innerDimensions('BarChartCon').width;
+ctx2.height = innerDimensions('BarChartCon').height;
+ctx2.width = innerDimensions('BarChartCon').width;
 
-var BarChart = new Chart(ctx2, {   //create Chart.js Chart and Set options for the Bar Chart
+var BarChart = new Chart(ctx2, { //create Chart.js Chart and Set options for the Bar Chart
     type: 'bar',
     data: {
         labels: [],
-        datasets: [
-            {
+        datasets: [{
                 label: "Maximum",
                 data: [],
                 backgroundColor: 'rgba(41, 121, 71, 0.48)',
@@ -578,18 +576,18 @@ var BarChart = new Chart(ctx2, {   //create Chart.js Chart and Set options for t
                 fill: false,
             }
         ]
-    }, 
+    },
     options: {
         responsive: true,
-        onAnimationComplete: function () {
+        onAnimationComplete: function() {
             var ctx = this.chart.ctx;
             ctx.font = this.scale.font;
             ctx.fillStyle = this.scale.textColor
             ctx.textAlign = "center";
             ctx.textBaseline = "bottom";
 
-            this.datasets.forEach(function (dataset) {
-                dataset.bars.forEach(function (bar) {
+            this.datasets.forEach(function(dataset) {
+                dataset.bars.forEach(function(bar) {
                     ctx.fillText(bar.value, bar.x, bar.y - 5);
                 });
             })
@@ -599,7 +597,7 @@ var BarChart = new Chart(ctx2, {   //create Chart.js Chart and Set options for t
             //intersect: false,
         },
         hover: {
-            mode: 'nearest', 
+            mode: 'nearest',
             intersect: true
         },
         scales: {
@@ -628,26 +626,24 @@ var BarChart = new Chart(ctx2, {   //create Chart.js Chart and Set options for t
     }
 });
 
-var ctx3 = document.getElementById('CompareLineChartId');  //Get Chart Index
+var ctx3 = document.getElementById('CompareLineChartId'); //Get Chart Index
 
 //Set Width and Height of the chart to fit container
-ctx3.height=innerDimensions('CompareLineChartCon').height;
-ctx3.width=innerDimensions('CompareLineChartCon').width;
+ctx3.height = innerDimensions('CompareLineChartCon').height;
+ctx3.width = innerDimensions('CompareLineChartCon').width;
 
-var CompareLineChart = new Chart(ctx3, {   //create Chart.js Chart and Set options for the Bar Chart
-    type: 'line',                   
+var CompareLineChart = new Chart(ctx3, { //create Chart.js Chart and Set options for the Bar Chart
+    type: 'line',
     data: {
         labels: ['0'],
-        datasets: [
-            {
-                label: 'Dataset',
-                //backgroundColor: '#d95f02',
-                borderColor: '#d95f02',
-                borderWidth: 1,
-                data: [],
-            }
-        ]
-    }, 
+        datasets: [{
+            label: 'Dataset',
+            //backgroundColor: '#d95f02',
+            borderColor: '#d95f02',
+            borderWidth: 1,
+            data: [],
+        }]
+    },
     options: {
         responsive: true,
         tooltips: {
@@ -655,7 +651,7 @@ var CompareLineChart = new Chart(ctx3, {   //create Chart.js Chart and Set optio
             //intersect: false,
         },
         hover: {
-            mode: 'nearest', 
+            mode: 'nearest',
             intersect: true
         },
         scales: {
@@ -682,22 +678,20 @@ var CompareLineChart = new Chart(ctx3, {   //create Chart.js Chart and Set optio
     }
 });
 
-var ctx4 = document.getElementById('ErrorChartId');  //Get Chart Index
+var ctx4 = document.getElementById('ErrorChartId'); //Get Chart Index
 
 //Set Width and Height of the chart to fit container
-ctx4.height=innerDimensions('ErrorChartCon').height;
-ctx4.width=innerDimensions('ErrorChartCon').width;
+ctx4.height = innerDimensions('ErrorChartCon').height;
+ctx4.width = innerDimensions('ErrorChartCon').width;
 
-var ErrorChart = new Chart(ctx4, {   //create Chart.js Chart and Set options for the Bar Chart
-    type: 'barWithErrorBars',                   
-    data: { 
+var ErrorChart = new Chart(ctx4, { //create Chart.js Chart and Set options for the Bar Chart
+    type: 'barWithErrorBars',
+    data: {
         labels: [],
-        datasets: [
-            {
-                label: 'Zugfestigkeit',
-            }
-        ]
-    }, 
+        datasets: [{
+            label: 'Zugfestigkeit',
+        }]
+    },
     options: {
         responsive: true,
         tooltips: {
@@ -705,7 +699,7 @@ var ErrorChart = new Chart(ctx4, {   //create Chart.js Chart and Set options for
             //intersect: false,
         },
         hover: {
-            mode: 'nearest', 
+            mode: 'nearest',
             intersect: true
         },
         scales: {
@@ -729,35 +723,34 @@ var ErrorChart = new Chart(ctx4, {   //create Chart.js Chart and Set options for
             }]
         },
 
-    }});
+    }
+});
 
-var ctx5 = document.getElementById('TTestResultChartId');  //Get Chart Index
+var ctx5 = document.getElementById('TTestResultChartId'); //Get Chart Index
 
 //Set Width and Height of the chart to fit container
-ctx5.height=innerDimensions('TTestCon').height;
-ctx5.width=innerDimensions('TTestCon').width;
+ctx5.height = innerDimensions('TTestCon').height;
+ctx5.width = innerDimensions('TTestCon').width;
 
-var TTestChart = new Chart(ctx5, {   //create Chart.js Chart and Set options for the Bar Chart
+var TTestChart = new Chart(ctx5, { //create Chart.js Chart and Set options for the Bar Chart
     type: 'horizontalBar',
     data: {
         labels: [],
-        datasets: [
-            { 
-                label: "P Value",
-                data: [],
-                backgroundColor: 'rgba(41, 121, 71, 0.48)',
-                borderColor: '#297947',
-                borderWidth: 1,
-                lineTension: 0,
-                lineTension: 0,
-                pointRadius: 0,
-                fill: false,
-            }
-        ]
-    }, 
+        datasets: [{
+            label: "P Value",
+            data: [],
+            backgroundColor: 'rgba(41, 121, 71, 0.48)',
+            borderColor: '#297947',
+            borderWidth: 1,
+            lineTension: 0,
+            lineTension: 0,
+            pointRadius: 0,
+            fill: false,
+        }]
+    },
     options: {
         responsive: true,
-        animation:{
+        animation: {
             "onComplete": function() {
                 var chartInstance = this.chart,
                     ctx = chartInstance.ctx;
@@ -770,13 +763,13 @@ var TTestChart = new Chart(ctx5, {   //create Chart.js Chart and Set options for
                     var meta = chartInstance.controller.getDatasetMeta(i);
                     meta.data.forEach(function(bar, index) {
                         var data = dataset.data[index].toFixed(6);
-                        ctx.fillText(data, bar._model.x + 28, bar._model.y+ 5);
+                        ctx.fillText(data, bar._model.x + 28, bar._model.y + 5);
                     });
                 });
-            }  
+            }
         },
         tooltips: false,
-        scales: { 
+        scales: {
             xAxes: [{
                 display: true,
                 scaleLabel: {
@@ -800,7 +793,7 @@ var TTestChart = new Chart(ctx5, {   //create Chart.js Chart and Set options for
         annotation: {
             annotations: [{
                 type: 'line',
-                mode: 'vertical', 
+                mode: 'vertical',
                 scaleID: 'x-axis-0',
                 value: 0.05,
                 borderColor: 'rgb(255, 66, 66)',
@@ -815,8 +808,8 @@ var TTestChart = new Chart(ctx5, {   //create Chart.js Chart and Set options for
 });
 
 
-function innerDimensions(id){                   //get the dimensions with padding of element
-    var node= document.getElementById(id)
+function innerDimensions(id) { //get the dimensions with padding of element
+    var node = document.getElementById(id)
     var computedStyle = getComputedStyle(node);
 
     let width = node.clientWidth; // width with padding
@@ -827,97 +820,96 @@ function innerDimensions(id){                   //get the dimensions with paddin
     return { height, width };
 }
 
-function SetData(JsonArray){                    //Shows the Data Passed as an array
-    for(var i=0; i<JsonArray.length; i++){   //Loop through the data 
-        addData(JsonArray[i]);                 //add Data to CHart
+function SetData(JsonArray) { //Shows the Data Passed as an array
+    for (var i = 0; i < JsonArray.length; i++) { //Loop through the data 
+        addData(JsonArray[i]); //add Data to CHart
     }
-    LiveChart.update();                     //Update Chart
+    LiveChart.update(); //Update Chart
 }
 
-function addData(data, steps) {     
-    var DataSteps = steps || DefaultStepSize;       //If steps are passed set this steps else use default steps
-    var LD=LiveChart.data.labels;      //Get Chart labels
-    LD.push((Number(LD[LD.length-1])+DataSteps).toString());   //Set new label which is an increment of the Datasteps from the last label
-    var DatasetData=LiveChart.data.datasets[0].data;    //Get Chart Data
-    DatasetData.push(data);                             //ADd Data to CHart
+function addData(data, steps) {
+    var DataSteps = steps || DefaultStepSize; //If steps are passed set this steps else use default steps
+    var LD = LiveChart.data.labels; //Get Chart labels
+    LD.push((Number(LD[LD.length - 1]) + DataSteps).toString()); //Set new label which is an increment of the Datasteps from the last label
+    var DatasetData = LiveChart.data.datasets[0].data; //Get Chart Data
+    DatasetData.push(data); //ADd Data to CHart
 }
 
-function ClearData(){                          //Reset Data of the Charts
-    LiveChart.data.labels=["0"];
+function ClearData() { //Reset Data of the Charts
+    LiveChart.data.labels = ["0"];
     LiveChart.data.datasets[0].data = [];
     LiveChart.update();
 
 
-    BarChart.data.labels=[];
+    BarChart.data.labels = [];
     BarChart.data.datasets[0].data = [];
     BarChart.data.datasets[1].data = [];
     BarChart.update();
 
 
-    CompareLineChart.data.labels=[];
-    CompareLineChart.data.datasets=[];
+    CompareLineChart.data.labels = [];
+    CompareLineChart.data.datasets = [];
     CompareLineChart.update();
 
-    ErrorChart.data.labels=[];
-    ErrorChart.data.datasets=[
-        {
-            errorBarLineWidth: 3,
-            errorBarWhiskerLineWidth: 3,
-            backgroundColor: 'rgba(17, 95, 86, 0.7)',
-            label: 'Zugfestigkeit',
-            data: []
-        }
-    ];
+    ErrorChart.data.labels = [];
+    ErrorChart.data.datasets = [{
+        errorBarLineWidth: 3,
+        errorBarWhiskerLineWidth: 3,
+        backgroundColor: 'rgba(17, 95, 86, 0.7)',
+        label: 'Zugfestigkeit',
+        data: []
+    }];
     ErrorChart.update();
-    GruopdData= [];
+    GruopdData = [];
 
-    TTestChart.data.labels=[];
-    TTestChart.data.datasets[0].data=[];
+    TTestChart.data.labels = [];
+    TTestChart.data.datasets[0].data = [];
     TTestChart.update();
 }
 
-function SetBarData(JsonObj){             //Sets the Bar Data
-    for(var i=0; i<JsonObj.length; i++){  //Go through all of the data
-        if(JsonObj[i].Selected){          //Check if data is selected
-            AddBarData(JsonObj[i].BreakPoint,JsonObj[i].Maximum, JsonObj[i].MetaData.Name)   //Get Breakpoint and Test Name and add it to the Bar Chart
+function SetBarData(JsonObj) { //Sets the Bar Data
+    for (var i = 0; i < JsonObj.length; i++) { //Go through all of the data
+        if (JsonObj[i].Selected) { //Check if data is selected
+            AddBarData(JsonObj[i].BreakPoint, JsonObj[i].Maximum, JsonObj[i].MetaData.Name) //Get Breakpoint and Test Name and add it to the Bar Chart
         }
     }
-    BarChart.update();   //Update Bar Chart
+    BarChart.update(); //Update Bar Chart
 }
 
-function AddBarData(BP, Max, label){           
-    var BL=BarChart.data.labels;    //Get Bar CHart Labels
-    BL.push(label)      //Set Bar Chart Label
-    var BPD=BarChart.data.datasets[1].data;   //Get Bar CHart BReakpoint Data 
-    BPD.push(BP);   //Set Bar Chart Breakpoint Data
-    var MaxD=BarChart.data.datasets[0].data;   //Get Bar CHart Maximum Data 
-    MaxD.push(Max);   //Set Bar Chart Maximum Data
+function AddBarData(BP, Max, label) {
+    var BL = BarChart.data.labels; //Get Bar CHart Labels
+    BL.push(label) //Set Bar Chart Label
+    var BPD = BarChart.data.datasets[1].data; //Get Bar CHart BReakpoint Data 
+    BPD.push(BP); //Set Bar Chart Breakpoint Data
+    var MaxD = BarChart.data.datasets[0].data; //Get Bar CHart Maximum Data 
+    MaxD.push(Max); //Set Bar Chart Maximum Data
 }
 
 
-function SetCompareLineData(JsonObj){             //Sets the Compare Line Data
-    var MaxDataLength = 0;  //The Longest Array (to scale the graph to the biggest dataset)
+function SetCompareLineData(JsonObj) { //Sets the Compare Line Data
+    var MaxDataLength = 0; //The Longest Array (to scale the graph to the biggest dataset)
 
-    for(var i=0; i<JsonObj.length; i++){  //Go through all of the data
-        if(JsonObj[i].Selected){          //Check if data is seleceted
-            AddCompareLineData(JsonObj[i].Data, JsonObj[i].MetaData.Name)   //Get Data array and and Test Name and add it to the Line Chart
-            if(JsonObj[i].Data.length>MaxDataLength){
-                MaxDataLength=JsonObj[i].Data.length;
+    for (var i = 0; i < JsonObj.length; i++) { //Go through all of the data
+        if (JsonObj[i].Selected) { //Check if data is seleceted
+            AddCompareLineData(JsonObj[i].Data, JsonObj[i].MetaData.Name) //Get Data array and and Test Name and add it to the Line Chart
+            if (JsonObj[i].Data.length > MaxDataLength) {
+                MaxDataLength = JsonObj[i].Data.length;
             }
         }
     }
 
-    for(var i=0; i<=MaxDataLength; i++){  //Set Labels
-        CompareLineChart.data.labels.push(i.toString())      //Set Line Chart Labels
+    for (var i = 0; i <= MaxDataLength; i++) { //Set Labels
+        CompareLineChart.data.labels.push(i.toString()) //Set Line Chart Labels
     }
 
-    CompareLineChart.update();   //Update Chart
+    CompareLineChart.update(); //Update Chart
 }
 
-function AddCompareLineData(ArrData, label){   
+function AddCompareLineData(ArrData, label) {
     var RandomColor = randomColor({
-        luminosity: 'dark'});  //get random Color
-    var NewDataset={   //Create Dataset
+        luminosity: 'dark'
+    }); //get random Color
+    var NewDataset = { //Create Dataset
         label: label,
         data: ArrData,
         backgroundColor: RandomColor,
@@ -928,37 +920,37 @@ function AddCompareLineData(ArrData, label){
         pointRadius: 0,
         fill: false,
     };
-    var MaxD=CompareLineChart.data.datasets;   //Get Bar CHart datasets 
-    MaxD.push(NewDataset);   //Set Bar Chart Maximum Data
+    var MaxD = CompareLineChart.data.datasets; //Get Bar CHart datasets 
+    MaxD.push(NewDataset); //Set Bar Chart Maximum Data
 }
 
-function SetErroChart(data){
-    var EL=ErrorChart.data.labels;    //Get Labels
-    EL.push.apply(EL, data.labels);//Set Labels
-    var ED=ErrorChart.data.datasets[0];   //Set Labels
-    ED.data = data.datasets[0].data;   //Set Data
+function SetErroChart(data) {
+    var EL = ErrorChart.data.labels; //Get Labels
+    EL.push.apply(EL, data.labels); //Set Labels
+    var ED = ErrorChart.data.datasets[0]; //Set Labels
+    ED.data = data.datasets[0].data; //Set Data
 
     ErrorChart.update();
-} 
+}
 
-function Mean(data){  //Calculate the Mean of an Array
+function Mean(data) { //Calculate the Mean of an Array
     let sum = 0.0;
-    for (let i of data){
+    for (let i of data) {
         sum += Number(i);
         console.log(i);
     }
-    return sum/data.length;
+    return sum / data.length;
 }
 
-function StandardDiviation(data){   //Calculate the Standard deviation of an array
+function StandardDiviation(data) { //Calculate the Standard deviation of an array
     let m = Mean(data);
-    return Math.sqrt(data.reduce(function (sq, n) {
+    return Math.sqrt(data.reduce(function(sq, n) {
         return sq + Math.pow(n - m, 2);
     }, 0) / (data.length - 1));
 }
 
 function saveAs(uri, filename) {
-    uri=fixUmlauts(uri);
+    uri = fixUmlauts(uri);
     var link = document.createElement('a');
     if (typeof link.download === 'string') {
         link.href = uri;
@@ -977,29 +969,29 @@ function saveAs(uri, filename) {
     }
 }
 
-function GenerateCSV(){  //converts the grouped data to an scv table
+function GenerateCSV() { //converts the grouped data to an scv table
     MaxSampleSize = 0;
-    for(let data of GruopdData){
-        if(data.sampleSize>MaxSampleSize){
-            MaxSampleSize=data.sampleSize;
+    for (let data of GruopdData) {
+        if (data.sampleSize > MaxSampleSize) {
+            MaxSampleSize = data.sampleSize;
         }
     }
 
     let csvData = '"sep=,"\r\n';
     let header = '"Name","Stichproben Anzahl",';
-    for(let i=0; i<MaxSampleSize; i++){
-        header += '"Wert' + (i+1) + '",';
+    for (let i = 0; i < MaxSampleSize; i++) {
+        header += '"Wert' + (i + 1) + '",';
     }
     header += '"Mittelwert","Standardabweichung"\r\n';
 
     csvData += header;
 
-    for(let data of GruopdData){
+    for (let data of GruopdData) {
         let row = '"' + data.name + '","' + data.sampleSize + '",';
 
-        for(let i=0; i<MaxSampleSize; i++){
+        for (let i = 0; i < MaxSampleSize; i++) {
             let sample = data.values[i];
-            if(!sample){
+            if (!sample) {
                 sample = '/';
             }
             row += '"' + sample + '",';
@@ -1011,21 +1003,21 @@ function GenerateCSV(){  //converts the grouped data to an scv table
 
     }
 
-    let filename=document.getElementById('filenametf').value;
+    let filename = document.getElementById('filenametf').value;
     console.log(filename)
-    if(filename.length>0){
-        if(filename.slice(-4)!='.csv'){
+    if (filename.length > 0) {
+        if (filename.slice(-4) != '.csv') {
             filename += '.csv';
         }
-    }else{
-        filename='OpenPullTestData.csv';
+    } else {
+        filename = 'OpenPullTestData.csv';
     }
 
-    csvData = 'data:text/csv,' +csvData;
-    saveAs(csvData, filename);  //error when download 
+    csvData = 'data:text/csv,' + csvData;
+    saveAs(csvData, filename); //error when download 
 }
 
-function TTestGenerateCSV(){  //converts the grouped data to an scv table
+function TTestGenerateCSV() { //converts the grouped data to an scv table
 
     let alpha = 0.05;
     let csvData = '"sep=,"\r\n';
@@ -1033,35 +1025,35 @@ function TTestGenerateCSV(){  //converts the grouped data to an scv table
 
     csvData += header;
 
-    for(let data of TTestResults){
-        let signifikant = data.results.pTwoSided<alpha?'Ja' : 'Nein' 
-        let asterix =  generateAsterixes(alpha, data.results.pTwoSided);
+    for (let data of TTestResults) {
+        let signifikant = data.results.pTwoSided < alpha ? 'Ja' : 'Nein'
+        let asterix = generateAsterixes(alpha, data.results.pTwoSided);
 
-        let row = '"' + data.name + '","' + data.results.tStatistic + '","' + data.results.pTwoSided + '","' + alpha + '","' + signifikant + '","' + asterix +'"\r\n';
+        let row = '"' + data.name + '","' + data.results.tStatistic + '","' + data.results.pTwoSided + '","' + alpha + '","' + signifikant + '","' + asterix + '"\r\n';
 
         csvData += row;
 
     }
     console.log(csvData);
 
-    let filename=document.getElementById('filenametf').value;
+    let filename = document.getElementById('filenametf').value;
     console.log(filename)
-    if(filename.length>0){
-        if(filename.slice(-4)!='.csv'){
+    if (filename.length > 0) {
+        if (filename.slice(-4) != '.csv') {
             filename += '.csv';
         }
-    }else{
-        filename='OpenPullTTest.csv';
+    } else {
+        filename = 'OpenPullTTest.csv';
     }
 
-    csvData = 'data:text/csv,' +csvData;
-    saveAs(csvData, filename);  //error when download 
+    csvData = 'data:text/csv,' + csvData;
+    saveAs(csvData, filename); //error when download 
 }
 
-function structureSampleData(gDO1, gDO2){
+function structureSampleData(gDO1, gDO2) {
     let data = [];
 
-    for(let i=0; i<gDO1.sampleSize; i++){
+    for (let i = 0; i < gDO1.sampleSize; i++) {
         let dataObj = {
             sample1: gDO1.values[i],
             sample2: gDO2.values[i],
@@ -1074,16 +1066,16 @@ function structureSampleData(gDO1, gDO2){
 
 }
 
-function generateAsterixes(alpha, pValue){
+function generateAsterixes(alpha, pValue) {
     let result = "error";
-    if(pValue>alpha){
-        result="ns";
-    }else if(pValue>0.01){
-        result="*";
-    }else if(pValue>0.001){
-        result="**";
-    }else if(pValue>0){
-        result="***"
+    if (pValue > alpha) {
+        result = "ns";
+    } else if (pValue > 0.01) {
+        result = "*";
+    } else if (pValue > 0.001) {
+        result = "**";
+    } else if (pValue > 0) {
+        result = "***"
     }
     return result;
 }

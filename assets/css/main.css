@@ -4,46 +4,55 @@ body {
   padding: 0;
   background-image: url("../bg.jpg");
   background-size: cover;
-  font-family: "Muli", sans-serif; }
+  font-family: "Muli", sans-serif;
+}
 
 ul {
   list-style-type: none;
   margin: 0;
-  padding: 0; }
+  padding: 0;
+}
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: #262626 #e2e2e2; }
+  scrollbar-color: #262626 #e2e2e2;
+}
 
 *::-webkit-scrollbar {
-  width: 12px; }
+  width: 12px;
+}
 
 *::-webkit-scrollbar-track {
   background: #262626;
   border-top-right-radius: 20px;
-  border-bottom-right-radius: 20px; }
+  border-bottom-right-radius: 20px;
+}
 
 *::-webkit-scrollbar-thumb {
   background-color: #e2e2e2;
   border-radius: 20px;
-  border: 3px solid #262626; }
+  border: 3px solid #262626;
+}
 
 .SelectDataPreview {
   position: absolute;
   width: 100%;
-  height: 100%; }
-  .SelectDataPreview .Back {
-    top: 5px;
-    left: 10px;
-    position: absolute;
-    color: #e2e2e2;
-    font-size: 3em; }
+  height: 100%;
+}
+.SelectDataPreview .Back {
+  top: 5px;
+  left: 10px;
+  position: absolute;
+  color: #e2e2e2;
+  font-size: 3em;
+}
 
 .SelectDataPreviewOverlay {
   position: absolute;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.62); }
+  background-color: rgba(0, 0, 0, 0.62);
+}
 
 .SelectContainer {
   position: absolute;
@@ -55,297 +64,360 @@ ul {
   text-align: center;
   align-items: center;
   color: #fff;
-  font-family: 'Lexend Deca', sans-serif;
-  font-size: 2em; }
-  .SelectContainer input[type=file] {
-    visibility: hidden; }
-  .SelectContainer button {
-    margin: 40px 20px;
-    height: 50px;
-    width: 220px;
-    background-color: #5367ff;
-    border: 0;
-    border-radius: 15px;
-    font-size: 0.6em;
-    transition: background-color .5s; }
-  .SelectContainer button:hover {
-    background-color: #53a9ff; }
-  .SelectContainer button:active {
-    background-color: #53ff60; }
-  .SelectContainer.VWA button {
-    margin: 10px 20px; }
+  font-family: "Lexend Deca", sans-serif;
+  font-size: 2em;
+}
+.SelectContainer input[type=file] {
+  visibility: hidden;
+}
+.SelectContainer button {
+  margin: 40px 20px;
+  height: 50px;
+  width: 220px;
+  background-color: #5367ff;
+  border: 0;
+  border-radius: 15px;
+  font-size: 0.6em;
+  transition: background-color 0.5s;
+}
+.SelectContainer button:hover {
+  background-color: #53a9ff;
+}
+.SelectContainer button:active {
+  background-color: #53ff60;
+}
+.SelectContainer.VWA button {
+  margin: 10px 20px;
+}
+.SelectContainer .loadVWAData {
+  position: absolute;
+  bottom: 0px;
+}
+.SelectContainer .loadVWAData button {
+  background-color: #ff971e;
+}
 
 .VisualizerContainer {
   position: absolute;
   width: 100%;
-  height: 100%; }
-  .VisualizerContainer .Chart {
-    position: absolute;
-    width: 65%;
-    height: 80%;
-    top: 10%;
-    left: 30px;
-    padding: 20px;
-    border-radius: 30px;
-    background-color: #262626; }
-  .VisualizerContainer .TestData {
-    position: relative;
-    display: float;
-    width: 25%;
-    height: 80%;
-    top: 10%;
-    float: right;
-    margin-right: 30px;
-    border-radius: 20px;
-    background-color: #262626;
-    overflow-y: auto;
-    overflow-x: hidden; }
-  .VisualizerContainer .Back {
-    top: 5px;
-    left: 10px;
-    position: absolute;
-    color: #e2e2e2;
-    font-size: 3em; }
+  height: 100%;
+}
+.VisualizerContainer .Chart {
+  position: absolute;
+  width: 65%;
+  height: 80%;
+  top: 10%;
+  left: 30px;
+  padding: 20px;
+  border-radius: 30px;
+  background-color: #262626;
+}
+.VisualizerContainer .TestData {
+  position: relative;
+  display: float;
+  width: 25%;
+  height: 80%;
+  top: 10%;
+  float: right;
+  margin-right: 30px;
+  border-radius: 20px;
+  background-color: #262626;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.VisualizerContainer .Back {
+  top: 5px;
+  left: 10px;
+  position: absolute;
+  color: #e2e2e2;
+  font-size: 3em;
+}
 
 .SelectTest {
   cursor: default;
-  transition: transform ease-in-out 1.5s; }
-  .SelectTest {
-    scrollbar-width: thin;
-    scrollbar-color: #262626 #e2e2e2; }
-  .SelectTest::-webkit-scrollbar {
-    width: 12px; }
-  .SelectTest::-webkit-scrollbar-track {
-    background: #262626;
-    border-top-right-radius: 20px;
-    border-bottom-right-radius: 20px; }
-  .SelectTest::-webkit-scrollbar-thumb {
-    background-color: #e2e2e2;
-    border-radius: 20px;
-    border: 3px solid #262626; }
-  .SelectTest h1 {
-    color: #e2e2e2;
-    text-align: center; }
-  .SelectTest .TestItem {
-    box-sizing: border-box;
-    position: relative;
-    width: 80%;
-    height: 30px;
-    left: 10%;
-    top: 15px;
-    border-radius: 5px;
-    background-color: #e2e2e2;
-    color: #121212;
-    font-size: 1.2em;
-    padding: 3px 10px;
-    margin: 10px 0;
-    overflow-x: hidden;
-    transition: background-color .5s; }
-    .SelectTest .TestItem::-webkit-scrollbar {
-      width: 12px; }
-    .SelectTest .TestItem::-webkit-scrollbar-track {
-      background: #262626;
-      border-radius: 4px; }
-    .SelectTest .TestItem::-webkit-scrollbar-thumb {
-      background-color: #e2e2e2;
-      border-radius: 20px;
-      border: 2px solid #262626; }
-  .SelectTest .TestItem:hover {
-    background-color: #c9c9c9; }
+  transition: transform ease-in-out 1.5s;
+}
+.SelectTest {
+  scrollbar-width: thin;
+  scrollbar-color: #262626 #e2e2e2;
+}
+.SelectTest::-webkit-scrollbar {
+  width: 12px;
+}
+.SelectTest::-webkit-scrollbar-track {
+  background: #262626;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+.SelectTest::-webkit-scrollbar-thumb {
+  background-color: #e2e2e2;
+  border-radius: 20px;
+  border: 3px solid #262626;
+}
+.SelectTest h1 {
+  color: #e2e2e2;
+  text-align: center;
+}
+.SelectTest .TestItem {
+  box-sizing: border-box;
+  position: relative;
+  width: 80%;
+  height: 30px;
+  left: 10%;
+  top: 15px;
+  border-radius: 5px;
+  background-color: #e2e2e2;
+  color: #121212;
+  font-size: 1.2em;
+  padding: 3px 10px;
+  margin: 10px 0;
+  overflow-x: hidden;
+  transition: background-color 0.5s;
+}
+.SelectTest .TestItem::-webkit-scrollbar {
+  width: 12px;
+}
+.SelectTest .TestItem::-webkit-scrollbar-track {
+  background: #262626;
+  border-radius: 4px;
+}
+.SelectTest .TestItem::-webkit-scrollbar-thumb {
+  background-color: #e2e2e2;
+  border-radius: 20px;
+  border: 2px solid #262626;
+}
+.SelectTest .TestItem:hover {
+  background-color: #c9c9c9;
+}
 
 .MetaData {
   transform: translate(130%, 0);
-  transition: transform ease-in-out 1.5s; }
-  .MetaData h1 {
-    color: #e2e2e2;
-    text-align: center; }
-  .MetaData i {
-    position: relative;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 3em;
-    color: #e2e2e2; }
-  .MetaData .TestItem {
-    box-sizing: border-box;
-    position: relative;
-    width: 80%;
-    height: 30px;
-    left: 10%;
-    top: 15px;
-    border-radius: 5px;
-    background-color: #e2e2e2;
-    color: #121212;
-    font-size: 1.2em;
-    padding: 3px 10px;
-    margin: 10px 0;
-    overflow-x: hidden; }
-    .MetaData .TestItem::-webkit-scrollbar {
-      width: 12px; }
-    .MetaData .TestItem::-webkit-scrollbar-track {
-      background: #262626;
-      border-radius: 4px; }
-    .MetaData .TestItem::-webkit-scrollbar-thumb {
-      background-color: #e2e2e2;
-      border-radius: 20px;
-      border: 2px solid #262626; }
-    .MetaData .TestItem.Parameter {
-      left: 15%;
-      font-size: 1.1em; }
+  transition: transform ease-in-out 1.5s;
+}
+.MetaData h1 {
+  color: #e2e2e2;
+  text-align: center;
+}
+.MetaData i {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 3em;
+  color: #e2e2e2;
+}
+.MetaData .TestItem {
+  box-sizing: border-box;
+  position: relative;
+  width: 80%;
+  height: 30px;
+  left: 10%;
+  top: 15px;
+  border-radius: 5px;
+  background-color: #e2e2e2;
+  color: #121212;
+  font-size: 1.2em;
+  padding: 3px 10px;
+  margin: 10px 0;
+  overflow-x: hidden;
+}
+.MetaData .TestItem::-webkit-scrollbar {
+  width: 12px;
+}
+.MetaData .TestItem::-webkit-scrollbar-track {
+  background: #262626;
+  border-radius: 4px;
+}
+.MetaData .TestItem::-webkit-scrollbar-thumb {
+  background-color: #e2e2e2;
+  border-radius: 20px;
+  border: 2px solid #262626;
+}
+.MetaData .TestItem.Parameter {
+  left: 15%;
+  font-size: 1.1em;
+}
 
 .SelectTestMove {
-  transform: translateX(-130%); }
+  transform: translateX(-130%);
+}
 
 .BreakpointContainer {
   position: absolute;
   width: 100%;
-  height: 100%; }
-  .BreakpointContainer .Chart {
-    position: relative;
-    width: 90%;
-    height: 80%;
-    top: 10%;
-    left: 3.5%;
-    padding: 20px;
-    border-radius: 30px;
-    background-color: #262626;
-    margin-bottom: 5%; }
-  .BreakpointContainer #BarChartCon {
-    margin-bottom: 10%; }
-  .BreakpointContainer .Back {
-    top: 5px;
-    left: 10px;
-    position: fixed;
-    color: #e2e2e2;
-    font-size: 3em; }
-  .BreakpointContainer .OpenChooseTest {
-    z-index: 2;
-    top: 10px;
-    right: 10px;
-    position: fixed;
-    color: #e2e2e2;
-    font-size: 3em; }
-  .BreakpointContainer .ChooseTestContainer:hover,
-  .BreakpointContainer .OpenChooseTest:hover + .ChooseTestContainer {
-    visibility: visible;
-    opacity: 1; }
-  .BreakpointContainer .ChooseTestContainer {
-    opacity: 0;
-    visibility: hidden;
-    z-index: 1;
-    position: fixed;
-    top: 5px;
-    right: 0;
-    height: auto;
-    max-height: 90%;
-    overflow-y: scroll;
-    width: 40%;
-    background-color: #262626;
-    color: #e2e2e2;
-    padding: 10px 25px 30px 0px;
-    border-radius: 15px;
-    border: 2px solid #5367ff;
-    box-shadow: 8px 8px 10px #000;
-    transition: opacity ease-in-out .5s; }
-    .BreakpointContainer .ChooseTestContainer .SelcetAllButton {
-      padding: 5px;
-      border-radius: 7px;
-      background-color: #e2e2e2;
-      color: #000;
-      margin: 5px 15px;
-      width: 100px; }
-    .BreakpointContainer .ChooseTestContainer .TestItem {
-      box-sizing: border-box;
-      position: relative;
-      width: 80%;
-      height: 30px;
-      left: 10%;
-      top: 15px;
-      border-radius: 5px;
-      background-color: #e2e2e2;
-      color: #121212;
-      font-size: 1.2em;
-      padding: 3px 10px;
-      margin: 5px 0;
-      overflow-x: hidden;
-      transition: background-color .5s; }
-      .BreakpointContainer .ChooseTestContainer .TestItem::-webkit-scrollbar {
-        width: 12px; }
-      .BreakpointContainer .ChooseTestContainer .TestItem::-webkit-scrollbar-track {
-        background: #262626;
-        border-radius: 4px; }
-      .BreakpointContainer .ChooseTestContainer .TestItem::-webkit-scrollbar-thumb {
-        background-color: #e2e2e2;
-        border-radius: 20px;
-        border: 2px solid #262626; }
-    .BreakpointContainer .ChooseTestContainer .TestItem:hover {
-      background-color: #c9c9c9; }
+  height: 100%;
+}
+.BreakpointContainer .Chart {
+  position: relative;
+  width: 90%;
+  height: 80%;
+  top: 10%;
+  left: 3.5%;
+  padding: 20px;
+  border-radius: 30px;
+  background-color: #262626;
+  margin-bottom: 5%;
+}
+.BreakpointContainer #BarChartCon {
+  margin-bottom: 10%;
+}
+.BreakpointContainer .Back {
+  top: 5px;
+  left: 10px;
+  position: fixed;
+  color: #e2e2e2;
+  font-size: 3em;
+}
+.BreakpointContainer .OpenChooseTest {
+  z-index: 2;
+  top: 10px;
+  right: 10px;
+  position: fixed;
+  color: #e2e2e2;
+  font-size: 3em;
+}
+.BreakpointContainer .ChooseTestContainer:hover,
+.BreakpointContainer .OpenChooseTest:hover + .ChooseTestContainer {
+  visibility: visible;
+  opacity: 1;
+}
+.BreakpointContainer .ChooseTestContainer {
+  opacity: 0;
+  visibility: hidden;
+  z-index: 1;
+  position: fixed;
+  top: 5px;
+  right: 0;
+  height: auto;
+  max-height: 90%;
+  overflow-y: scroll;
+  width: 40%;
+  background-color: #262626;
+  color: #e2e2e2;
+  padding: 10px 25px 30px 0px;
+  border-radius: 15px;
+  border: 2px solid #5367ff;
+  box-shadow: 8px 8px 10px #000;
+  transition: opacity ease-in-out 0.5s;
+}
+.BreakpointContainer .ChooseTestContainer .SelcetAllButton {
+  padding: 5px;
+  border-radius: 7px;
+  background-color: #e2e2e2;
+  color: #000;
+  margin: 5px 15px;
+  width: 100px;
+}
+.BreakpointContainer .ChooseTestContainer .TestItem {
+  box-sizing: border-box;
+  position: relative;
+  width: 80%;
+  height: 30px;
+  left: 10%;
+  top: 15px;
+  border-radius: 5px;
+  background-color: #e2e2e2;
+  color: #121212;
+  font-size: 1.2em;
+  padding: 3px 10px;
+  margin: 5px 0;
+  overflow-x: hidden;
+  transition: background-color 0.5s;
+}
+.BreakpointContainer .ChooseTestContainer .TestItem::-webkit-scrollbar {
+  width: 12px;
+}
+.BreakpointContainer .ChooseTestContainer .TestItem::-webkit-scrollbar-track {
+  background: #262626;
+  border-radius: 4px;
+}
+.BreakpointContainer .ChooseTestContainer .TestItem::-webkit-scrollbar-thumb {
+  background-color: #e2e2e2;
+  border-radius: 20px;
+  border: 2px solid #262626;
+}
+.BreakpointContainer .ChooseTestContainer .TestItem:hover {
+  background-color: #c9c9c9;
+}
 
 .StandardDiviationContainer {
   position: absolute;
   width: 100%;
-  height: 100%; }
-  .StandardDiviationContainer .Back {
-    top: 5px;
-    left: 10px;
-    position: fixed;
-    color: #e2e2e2;
-    font-size: 3em; }
-  .StandardDiviationContainer .Chart {
-    position: relative;
-    width: 90%;
-    height: 80%;
-    top: 10%;
-    left: 3.5%;
-    padding: 20px 20px 150px 20px;
-    border-radius: 30px;
-    background-color: #e2e2e2;
-    margin-bottom: 5%; }
-    .StandardDiviationContainer .Chart h1, .StandardDiviationContainer .Chart h3 {
-      text-align: center; }
-    .StandardDiviationContainer .Chart select {
-      position: relative;
-      width: 200px;
-      left: calc(50% - 100px); }
-    .StandardDiviationContainer .Chart .fileNameTextfield {
-      position: relative;
-      width: 200px;
-      left: calc(50% - 100px);
-      margin: 10px;
-      font-size: 1.3em;
-      border-radius: 5px;
-      border: 1px 1px #000;
-      padding: 4px; }
-    .StandardDiviationContainer .Chart .Downloads {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%); }
-    .StandardDiviationContainer .Chart .selectcon {
-      position: relative;
-      width: 200px;
-      left: calc(50% - 100px); }
-      .StandardDiviationContainer .Chart .selectcon select {
-        margin: 15px 0; }
-      .StandardDiviationContainer .Chart .selectcon button {
-        width: 100%; }
-      .StandardDiviationContainer .Chart .selectcon .Downloads {
-        position: relative;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 530px; }
-        .StandardDiviationContainer .Chart .selectcon .Downloads button {
-          width: 250px; }
-    .StandardDiviationContainer .Chart button {
-      border-radius: 10px;
-      border: 0;
-      background-color: #5367ff;
-      padding: 10px;
-      font-size: 1.5em;
-      cursor: pointer; }
-    .StandardDiviationContainer .Chart #TTestCon {
-      position: relative;
-      width: 85vw;
-      height: 50vh;
-      left: 50%;
-      transform: translateX(-50%); }
-
-/*# sourceMappingURL=main.css.map */
+  height: 100%;
+}
+.StandardDiviationContainer .Back {
+  top: 5px;
+  left: 10px;
+  position: fixed;
+  color: #e2e2e2;
+  font-size: 3em;
+}
+.StandardDiviationContainer .Chart {
+  position: relative;
+  width: 90%;
+  height: 80%;
+  top: 10%;
+  left: 3.5%;
+  padding: 20px 20px 150px 20px;
+  border-radius: 30px;
+  background-color: #e2e2e2;
+  margin-bottom: 5%;
+}
+.StandardDiviationContainer .Chart h1,
+.StandardDiviationContainer .Chart h3 {
+  text-align: center;
+}
+.StandardDiviationContainer .Chart select {
+  position: relative;
+  width: 200px;
+  left: calc(50% - 100px);
+}
+.StandardDiviationContainer .Chart .fileNameTextfield {
+  position: relative;
+  width: 200px;
+  left: calc(50% - 100px);
+  margin: 10px;
+  font-size: 1.3em;
+  border-radius: 5px;
+  border: 1px 1px #000;
+  padding: 4px;
+}
+.StandardDiviationContainer .Chart .Downloads {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.StandardDiviationContainer .Chart .selectcon {
+  position: relative;
+  width: 200px;
+  left: calc(50% - 100px);
+}
+.StandardDiviationContainer .Chart .selectcon select {
+  margin: 15px 0;
+}
+.StandardDiviationContainer .Chart .selectcon button {
+  width: 100%;
+}
+.StandardDiviationContainer .Chart .selectcon .Downloads {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 530px;
+}
+.StandardDiviationContainer .Chart .selectcon .Downloads button {
+  width: 250px;
+}
+.StandardDiviationContainer .Chart button {
+  border-radius: 10px;
+  border: 0;
+  background-color: #5367ff;
+  padding: 10px;
+  font-size: 1.5em;
+  cursor: pointer;
+}
+.StandardDiviationContainer .Chart #TTestCon {
+  position: relative;
+  width: 85vw;
+  height: 50vh;
+  left: 50%;
+  transform: translateX(-50%);
+}/*# sourceMappingURL=main.css.map */
