@@ -67,14 +67,28 @@ fileInput.addEventListener('change', function() {
             reader.readAsText(file);
         })(files[i]);
     }
+    console.log(JsonData);
     /*
     */
 });
 
-//When Upload Btton clicked Set Mode and start File Api
-document.getElementById("DataFileInputButton").addEventListener('click', function() {
-    fileInput.click();
-});
+//Called on Init
+window.onload = function() {
+    if(getUrlVars()["data"]=='VWA'){
+        var scope = angular.element(document.getElementById("Visualizer")).scope();
+        scope.$apply(function(){
+            scope.VWAData = true;
+        });
+    }
+};
+//get url params
+function getUrlVars() {
+    var vars = {};
+    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+        vars[key] = value;
+    });
+    return vars;
+}
 
 //When Mode Button clicked select Mode
 document.getElementById("TestData").addEventListener('click', function() {
@@ -158,6 +172,7 @@ var app = angular.module("app", []);
 
 app.controller('Visualizer', function($scope) {
     $scope.ShowMode=0; // 0 = SelectDataScreen / 1=SelectModeScreen / 2 = View TestData / 3 = Breakpoints
+    $scope.VWAData = false;
     $scope.Data=[];   //Data Array Containing Json Data
     $scope.CurrentTestData = {};   //Obj containig the selected Test Data
     $scope.DisplayMetaData =[];       //Array Containig the MetaData of the Selected Test (Used for ng-repeat)  // Data: [Name, Data]
@@ -171,6 +186,10 @@ app.controller('Visualizer', function($scope) {
         ],
         selectedOption: {} //This sets the default value of the select in the ui
     };
+
+    $scope.fileInputButtonClicked = function(){
+        fileInput.click();
+    }
 
     $scope.isLocalStorageData = urlParams.get("localData");
     if($scope.isLocalStorageData=="true"){  //when there is available localstorage data
@@ -195,6 +214,24 @@ app.controller('Visualizer', function($scope) {
         }
         if($scope.ShowMode==4){
             $scope.calculateData();
+        }
+    }
+
+    $scope.setVWAData = function(type,path){
+        JsonData = [];
+        let fileNames = dataLinksMap.get(type);
+        for (let name of fileNames){
+            console.log(name);
+            fetch(path+name).then(response => {
+                return response.json();
+            }).then(data => {
+                data.MetaData.FileName=name;
+                JsonData.push(data); 
+                var scope = angular.element(document.getElementById("Visualizer")).scope();
+                scope.$apply(function(){
+                    scope.ShowMode=1;
+                });
+            });
         }
     }
 
@@ -285,7 +322,7 @@ app.controller('Visualizer', function($scope) {
         for(let key in $scope.Data){  //Set all data to select all status
             $scope.Data[key].Selected=$scope.SelectAllBool;
         }
-        
+
         $scope.SetBreakpointData();
     }
 
@@ -299,7 +336,7 @@ app.controller('Visualizer', function($scope) {
     $scope.calculateData = function(){
         ClearData();
 
-        let gruopedIndexes = new Map();  //get all the filenames with index and gruop them,
+        let gruopedIndexes = new Map();  //get all the filenames with index and group them,
         for(let i=0; i<$scope.Data.length; i++){
             let fname = $scope.Data[i].MetaData.FileName;
             fname.replace('(', '');
@@ -921,6 +958,7 @@ function StandardDiviation(data){   //Calculate the Standard deviation of an arr
 }
 
 function saveAs(uri, filename) {
+    uri=fixUmlauts(uri);
     var link = document.createElement('a');
     if (typeof link.download === 'string') {
         link.href = uri;
@@ -991,13 +1029,15 @@ function TTestGenerateCSV(){  //converts the grouped data to an scv table
 
     let alpha = 0.05;
     let csvData = '"sep=,"\r\n';
-    let header = '"Name","T-Wert","P-Wert","Alpha","Statistisch Signifikant"\r\n';
+    let header = '"Name","T-Wert","P-Wert","Alpha","Statistisch Signifikant","* Format"\r\n';
 
     csvData += header;
 
     for(let data of TTestResults){
         let signifikant = data.results.pTwoSided<alpha?'Ja' : 'Nein' 
-        let row = '"' + data.name + '","' + data.results.tStatistic + '","' + data.results.pTwoSided + '","' + alpha + '","' + signifikant + '"\r\n';
+        let asterix =  generateAsterixes(alpha, data.results.pTwoSided);
+
+        let row = '"' + data.name + '","' + data.results.tStatistic + '","' + data.results.pTwoSided + '","' + alpha + '","' + signifikant + '","' + asterix +'"\r\n';
 
         csvData += row;
 
@@ -1032,4 +1072,29 @@ function structureSampleData(gDO1, gDO2){
     return data;
 
 
+}
+
+function generateAsterixes(alpha, pValue){
+    let result = "error";
+    if(pValue>alpha){
+        result="ns";
+    }else if(pValue>0.01){
+        result="*";
+    }else if(pValue>0.001){
+        result="**";
+    }else if(pValue>0){
+        result="***"
+    }
+    return result;
+}
+
+function fixUmlauts(value) {
+    value = value.replace(/ä/g, 'ae');
+    value = value.replace(/ö/g, 'oe');
+    value = value.replace(/ü/g, 'ue');
+    value = value.replace(/ß/g, '&szlig;');
+    value = value.replace(/Ä/g, 'Ae');
+    value = value.replace(/Ö/g, 'Oe');
+    value = value.replace(/Ü/g, 'Ue');
+    return value;
 }

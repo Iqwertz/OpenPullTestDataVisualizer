@@ -1,0 +1,40 @@
+Name;Stichproben Anzahl;Wert1;Wert2;Wert3;Mittelwert;Standardabweichung
+Liegend Duesendurchmesser 0.2mm;3;388;497;505;463.33;65.36
+Liegend Duesendurchmesser 0.6mm;3;1255;1358;1331;1314.67;53.41
+Liegend Fuelldichte 0%;3;644;631;562;612.33;44.07
+Liegend Fuelldichte 100%;3;2198;2422;2015;2211.67;203.84
+Liegend Fuelldichte 50%;3;1169;1111;1032;1104;68.77
+Liegend Fuelldichte 75%;3;1660;1616;1428;1568;123.22
+Liegend Fuellmuster Dreiecke;3;875;866;881;874;7.55
+Liegend Fuellmuster Geradlinig;3;808;837;825;823.33;14.57
+Liegend Fuellmuster Gyroid;3;819;844;743;802;52.6
+Liegend Fuellmuster Konzentrisch;3;799;839;807;815;21.17
+Liegend Fuellmuster Kubisch;3;1075;1112;1085;1090.67;19.14
+Liegend Schalendicke 0.4mm;3;516;501;507;508;7.55
+Liegend Schalendicke 1.2mm;3;1295;1256;1251;1267.33;24.09
+Liegend Schichthoehe 0.1mm;3;1109;1079;1053;1080.33;28.02
+Liegend Schichthoehe 0.3mm;3;941;821;947;903;71.08
+Liegend Temperatur 190°;3;1042;959;835;945.33;104.17
+Liegend Temperatur 240°;3;875;940;969;928;48.14
+;;;;;1018.293529;56.27941176
+;;;;;;
+Stehend Duesendurchmesser 0.2mm;3;63;50;58;57;6.56
+Stehend Duesendurchmesser 0.6mm;3;633;771;670;691.33;71.43
+Stehend Fuelldichte 0%;3;193;234;221;216;20.95
+Stehend Fuelldichte 100%;3;1153;1136;1193;1160.67;29.26
+Stehend Fuelldichte 50%;3;824;772;637;744.33;96.52
+Stehend Fuelldichte 75%;3;1106;1024;969;1033;68.94
+Stehend Fuellmuster Dreiecke;3;468;400;492;453.33;47.72
+Stehend Fuellmuster Geradlinig;3;500;449;403;450.67;48.52
+Stehend Fuellmuster Gyroid;3;315;385;370;356.67;36.86
+Stehend Fuellmuster Konzentisch;3;438;253;403;364.67;98.28
+Stehend Fuellmuster Kubisch;3;368;327;317;337.33;27.02
+Stehend Schalendicke 0.4mm;3;564;571;401;512;96.19
+Stehend Schalendicke 1.2mm;3;785;830;767;794;32.45
+Stehend Schichthoehe 0.1mm;3;897;700;833;810;100.49
+Stehend Schichthoehe 0.3mm;3;317;420;344;360.33;53.41
+Stehend Temperatur 190°;3;49;18;80;49;31
+Stehend Temperatur 240°;3;522;549;613;561.33;46.74
+;;;;;526.5682353;53.66705882
+StandardLiegend;3;867;907;884;886;20.07
+StandardStehend;3;818;710;838;788.67;68.86

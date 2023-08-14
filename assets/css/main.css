@@ -72,6 +72,8 @@ ul {
     background-color: #53a9ff; }
   .SelectContainer button:active {
     background-color: #53ff60; }
+  .SelectContainer.VWA button {
+    margin: 10px 20px; }
 
 .VisualizerContainer {
   position: absolute;

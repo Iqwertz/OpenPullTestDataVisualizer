@@ -95,6 +95,12 @@ ul {
     button:active{
         background-color: #53ff60;
     }
+    
+    &.VWA{
+        button{
+            margin: 10px 20px;
+        }
+    }
 }
 
 .VisualizerContainer{
